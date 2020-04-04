@@ -1,70 +1,77 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class J_Com_Client {
     JTextArea textArea; //pole odebranych wiadomości
-    JTextField messageField; //pole wiadomości
-    BufferedReader buffer;
+    JTextField messageField; //pole wiadomości do wysłania
+    BufferedReader buffer; //buffer
     PrintWriter writer; //"pisarz" wiadomości
     Socket clientSocket; //adres i port serwera
 
+    public class clientData{
 
-    public static void main(String[] argv){
-        J_Com_Client klient = new J_Com_Client();
-        klient.createWorksheet();
     }
 
+    //utwórz okno
     public  void createWorksheet(){
-        JFrame border = new JFrame("Klient");
+        JFrame border = new JFrame("Klient"); //nazwa
         JPanel mainInterface = new JPanel();
 
-        textArea = new JTextArea(15,60);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setEditable(false);
+        textArea = new JTextArea(15,60); //miejsce do wyświetlania tekstu
+        textArea.setLineWrap(true); //zawijanie wierszy
+        textArea.setWrapStyleWord(true); //zawijaj całe słowa
+        textArea.setEditable(false);    //możliwość edycji tekstu w polu
 
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scrollPane = new JScrollPane(textArea); //scroll
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); //zawsze pionowo
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); //nigdy poziomo
 
-        messageField = new JTextField(20);
+        messageField = new JTextField(45); //pole do wpisywania tekstu
 
-        JButton sendButton = new JButton("Send");
-        sendButton.addActionListener(new SendButtonListener());
+        JButton sendButton = new JButton("Send"); //przycisk wyślij
+        sendButton.addActionListener(new SendButtonListener()); //dodanie do niego akcji
         messageField.addActionListener(new SendButtonListener());//wyślij enter
 
+        //dodanie elementów
         mainInterface.add(scrollPane);
         mainInterface.add(messageField);
         mainInterface.add(sendButton);
 
-        clientStart();
 
-        Thread clientThread = new Thread(new warningsReciver());
-        clientThread.start();
+        //utwórz wątek dla klienta
+
 
         border.getContentPane().add(BorderLayout.CENTER,mainInterface);
-        border.setSize(720,600);
+        border.setSize(720,325);
         border.setVisible(true);
         border.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
+    //setup klienta
     public void clientStart(){
         try {
-            InetAddress host = InetAddress.getLocalHost();
+           textArea.setText(null);
+            InetAddress guest = InetAddress.getLocalHost();
             clientSocket = new Socket("127.0.0.1",4242); //Adres IP hosta w tym przypadku 192.168.8.106 dla testw między urządzeniami. Do testów zastąpić 127.0.0.1
             InputStreamReader serwerReader = new InputStreamReader(clientSocket.getInputStream());
             buffer = new BufferedReader(serwerReader);
             writer = new PrintWriter(clientSocket.getOutputStream());
             System.out.println("gotowe do użycia");
-            textArea.append("Połączono jako: " + host.getHostAddress() + "\n"); //Wiadomość o połączeniu
+            textArea.append("Połączono jako: " + guest.getHostAddress() + "\n"); //Wiadomość o połączeniu
+            Thread clientThread = new Thread(new warningsReceiver());
+            clientThread.start();
        }catch(IOException e){
-            e.printStackTrace();
+            textArea.append("Brak połączenia z serverem.\nPonawianie próby połączenia za 5 sekund.\n");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            clientStart();
         }
     }
 
@@ -82,7 +89,7 @@ public class J_Com_Client {
         }
     }
 
-    public class warningsReciver implements Runnable{
+    public class warningsReceiver implements Runnable{
         public void run() {
             String message;
             try{
@@ -95,5 +102,13 @@ public class J_Com_Client {
             }
         }
     }
+        //start klienta
+    public static void main(String[] argv){
+        J_Com_Client klient = new J_Com_Client();
+        //utwórz okno
 
+        klient.createWorksheet();
+        klient.clientStart();
+
+    }
 }
