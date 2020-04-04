@@ -1,4 +1,4 @@
-package TestClient;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +7,7 @@ import java.net.*;
 import java.io.*;
 
 
-public class TestClient {
+public class J_Com_Client {
     JTextArea textArea; //pole odebranych wiadomości
     JTextField messageField; //pole wiadomości
     BufferedReader buffer;
@@ -16,7 +16,7 @@ public class TestClient {
 
 
     public static void main(String[] argv){
-        TestClient klient = new TestClient();
+        J_Com_Client klient = new J_Com_Client();
         klient.createWorksheet();
     }
 

@@ -1,10 +1,9 @@
-package TestServer;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class TestServer {
+public class J_Com_Server_Start {
 
     ArrayList inputStream;
 
@@ -36,7 +35,7 @@ public class TestServer {
     }
 
     public static void main(String[] argv){
-        TestServer server = new TestServer();
+        J_Com_Server_Start server = new J_Com_Server_Start();
         server.serverSetup();
     }
 
