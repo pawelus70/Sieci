@@ -1,2 +1,16 @@
 Serwer:
+	-Nawiąż połączenie
+	-Obsługa klas
+	-Obsługa wielu klientów
+	-Przypisz klientowi unikalne ID przy połączeniu/rejestracji
+	-Obsługa błędów (serwer jebie błędami jak klient się rozłączy)
+
+
 Klient:
+	-Nawiąż połączenie
+	-Obsłuż klasę zawierającą:
+		-ID
+		-Nick
+		-String - wiadomość
+		-Obsługę plików
+	-GUI
