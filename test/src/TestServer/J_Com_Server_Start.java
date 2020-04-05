@@ -11,6 +11,7 @@ public class J_Com_Server_Start {
         BufferedReader buffer;
         Socket clientSocket;
 
+
         public clientHandle(Socket clientSocketHandle){
             try{
                 clientSocket = clientSocketHandle;

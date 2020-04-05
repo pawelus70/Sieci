@@ -5,23 +5,38 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 
-public class J_Com_Client {
+public class J_Com_Client  {
     JTextArea textArea; //pole odebranych wiadomości
     JTextField messageField; //pole wiadomości
     BufferedReader buffer;
     PrintWriter writer; //"pisarz" wiadomości
     Socket clientSocket; //adres i port serwera
-
+    private String name;
 
     public static void main(String[] argv){
         J_Com_Client klient = new J_Com_Client();
-        klient.createWorksheet();
+
+        String nickname =  JOptionPane.showInputDialog(null, "Wprowadź swój pseudonim:", "Wprowadzenie", JOptionPane.PLAIN_MESSAGE);
+        if(nickname.equals(""))
+            //new ChatClient("Anonymous");
+            klient.createWorksheet("Anon");
+        else
+            klient.createWorksheet(nickname);
+            //new ChatClient(nickname);
+
+        //klient.createWorksheet();
     }
 
-    public  void createWorksheet(){
-        JFrame border = new JFrame("Klient");
+    public  void createWorksheet(String n){
+        name = n;
+        this.clientSocket = clientSocket;
+
+        JFrame border = new JFrame("Klient"+name);
         JPanel mainInterface = new JPanel();
 
         textArea = new JTextArea(15,60);
@@ -51,7 +66,23 @@ public class J_Com_Client {
         border.getContentPane().add(BorderLayout.CENTER,mainInterface);
         border.setSize(720,600);
         border.setVisible(true);
-        border.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        border.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        border.addWindowListener(new WindowAdapter() {// na zamknięcie okna
+            @Override
+            public void windowClosing(WindowEvent arg0){ //nasłuchuj zamknięcia
+                writer.println("Koniec");
+                writer.flush();
+                 System.exit(0);
+                /*try {
+                    writer.close();
+                    buffer.close();
+                    clientSocket.close();//Zakończ połączenie
+                   System.exit(0); //Zamknij proces
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }*/
+            }
+        });
     }
 
     public void clientStart(){
@@ -62,17 +93,24 @@ public class J_Com_Client {
             buffer = new BufferedReader(serwerReader);
             writer = new PrintWriter(clientSocket.getOutputStream());
             System.out.println("gotowe do użycia");
-            textArea.append("Połączono jako: " + host.getHostAddress() + "\n"); //Wiadomość o połączeniu
+            textArea.append("Połączono jako: " + name + "\n"); //Wiadomość o połączeniu
        }catch(IOException e){
-            e.printStackTrace();
+            System.out.println(e); //błąd wyrzuc
+            JOptionPane.showMessageDialog(null, "Nie połączono z serwerem."); // powiadomienie o niepowodzeniu
+            System.exit(0); //zakończ
+            //e.printStackTrace(); <Narazie wyrzucone>
         }
     }
 
     public class SendButtonListener implements ActionListener{
+        LocalTime time = LocalTime.now();//pobierz czas
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.US);//formatuj czas
+        String czas = formatter.format(time);//przypisz czas do string
+
         public void actionPerformed(ActionEvent ev){
             try{
                 InetAddress host = InetAddress.getLocalHost();
-                writer.println(host.getHostAddress() + ": " + messageField.getText());
+                writer.println("("+ czas + ") "+name + ": " + messageField.getText());
                 writer.flush();
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -83,6 +121,7 @@ public class J_Com_Client {
     }
 
     public class warningsReciver implements Runnable{
+
         public void run() {
             String message;
             try{
@@ -95,5 +134,4 @@ public class J_Com_Client {
             }
         }
     }
-
-}
+    }
