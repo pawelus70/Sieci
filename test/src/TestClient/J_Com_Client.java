@@ -5,7 +5,7 @@ import java.net.*;
 import java.io.*;
 
 
-
+//komentarz
 public class J_Com_Client {
     JTextArea textArea; //pole odebranych wiadomości
     JTextField messageField; //pole wiadomości do wysłania

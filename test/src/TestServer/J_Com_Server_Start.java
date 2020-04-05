@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+//komentarz
 public class J_Com_Server_Start {
 
     ArrayList inputStream;
