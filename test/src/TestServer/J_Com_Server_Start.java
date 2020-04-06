@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+//komentarz
 public class J_Com_Server_Start {
 
     ArrayList inputStream;
@@ -10,7 +11,6 @@ public class J_Com_Server_Start {
     public class clientHandle implements Runnable {
         BufferedReader buffer;
         Socket clientSocket;
-
 
         public clientHandle(Socket clientSocketHandle){
             try{
