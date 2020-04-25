@@ -22,8 +22,6 @@ public class Client {
             this.index = index;
         }
     }
-
-
     public class ClientHandle {
         String name;
         Socket socket;
@@ -129,8 +127,6 @@ public class Client {
                         }else {
                             System.out.println("Name cant be shorter than 3 signs");
                         }
-                        clientHandle.printWriter.println(message);
-                        clientHandle.printWriter.flush();
                     } else if (message.equals("003")) {//send to everyone
                         clientHandle.printWriter.println(message);
                         clientHandle.printWriter.flush();
