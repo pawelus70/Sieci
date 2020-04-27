@@ -9,6 +9,7 @@ import Server.Interface;
 public class Server {
     ArrayList<ClientHandle> clientHandles;
     int amountConnected = 0;
+    int anonymousUsers =0;
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
     // private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
     private final ExecutorService threadPool = Executors.newWorkStealingPool();

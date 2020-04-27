@@ -16,14 +16,7 @@ public class Interface implements Runnable{
         try {
 
             //System.out.println("Enter your name: ");
-            while(true) {
-                name =JOptionPane.showInputDialog(null, "Wprowadź swój pseudonim:", "Wprowadzenie", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/;
-                if(pattern.matcher(name).matches()){
-                    if(!(name.length()<3))break;
-                }
-                JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.", "Popraw", JOptionPane.ERROR_MESSAGE);
-                //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
-            }
+
 
             /////////********************GUI************************////////////////
 
@@ -31,7 +24,7 @@ public class Interface implements Runnable{
             Border border = BorderFactory.createLineBorder(Color.BLACK);
 
             //Tworzenie ramki
-            JFrame frame = new JFrame("Komunikator " + name);
+            JFrame frame = new JFrame("Komunikator");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(800, 500);
 
@@ -86,7 +79,24 @@ public class Interface implements Runnable{
             frame.setVisible(true);
 
             /////////********************************************////////////////
+            while(true) {
 
+                    name = JOptionPane.showInputDialog(frame, "Wprowadź swój pseudonim:", "Wprowadzenie", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
+                    if(name !=null){
+                        if(pattern.matcher(name).matches()){
+                            break;
+                        }
+                    }
+                    int input = JOptionPane.showConfirmDialog(frame,"Do you want to connect as Anonymous","Choose action",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+                    if(input == 0){
+                        name="Anonymous";
+                        break;
+                    }else if(input ==2){
+                        System.exit(1);
+                    }
+                JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.", "Popraw", JOptionPane.ERROR_MESSAGE);
+                //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
