@@ -162,6 +162,7 @@ public class J_Com_Client {
             messageField.requestFocus();
         }
     }
+    
     //odbieranie wiadomości
     public class warningsReceiver implements Runnable{
         public void run() {
