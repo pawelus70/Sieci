@@ -9,7 +9,8 @@ import Server.Interface;
 public class Server {
     ArrayList<ClientHandle> clientHandles;
     int amountConnected = 0;
-    int anonymousUsers =0;
+    short anonymousUsers =0;
+    int usersIndex = 0;
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
     // private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
     private final ExecutorService threadPool = Executors.newWorkStealingPool();
@@ -116,9 +117,10 @@ public class Server {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
 
-                clientHandles.add(new ClientHandle(clientSocket, (clientHandles.size()))); //add client to database
+                clientHandles.add(new ClientHandle(clientSocket, usersIndex)); //add client to database
                 threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //execute client thread
                 clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine(); //set client name
+                usersIndex+=1;
 
                 //System.out.println("Connected new Client has connected.\t" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress());
                 anInterface.logii.append("Connected new Client has connected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress() + "\n");
@@ -134,9 +136,7 @@ public class Server {
     public void onDisconnection(int index) {
         anInterface.logii.append("User has disconnected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientHandles.get(index).name + "\n");
         clientHandles.remove(index);
-        for (int i = 0; i < clientHandles.size(); i++) {
-            clientHandles.get(i).index = i;
-        }
+
         amountConnected = clientHandles.size() - 1;
         usersConnected();
     }
@@ -152,9 +152,9 @@ public class Server {
     }
 
     public void usersConnected(){
-        anInterface.userss.setText("Użytkownicy:");
+        anInterface.userss.setText("Users:");
         for (int i = 0; i < clientHandles.size(); i++) {
-            anInterface.userss.append("\n" + clientHandles.get(i).name);
+            anInterface.userss.append("\n" + clientHandles.get(i).name + "@"+clientHandles.get(i).index);
         }
     }
 
