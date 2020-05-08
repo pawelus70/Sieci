@@ -45,7 +45,7 @@ public class Client {
             System.out.println("Connected as: " + this.name);
             System.out.println("Your index is: " + this.index);
             //System.out.println("To get list of commands type: \"help\"");
-            anInterface.wiadomosci.append("To get list of commands type: \"/help\"\n");
+            anInterface.messagesField.append("To get list of commands type: \"/help\"\n");
         }
     }
 
@@ -67,7 +67,7 @@ public class Client {
             askForConnected();
         } catch (Exception e) {
             //System.out.println("Can't connect with server.");
-            anInterface.wiadomosci.append("Can't connect with server\n");
+            anInterface.messagesField.append("Can't connect with server\n");
             clientHandle.socket = null;
             clientHandle.isConnected = false;
             clientHandle.printWriter = null;
@@ -106,18 +106,18 @@ public class Client {
                                 clientHandle.name = message.substring(3);
                             } else {
                                 //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
-                                anInterface.wiadomosci.append("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.\n");
+                                anInterface.messagesField.append("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.\n");
                             }
                         } else {
                             //System.out.println("Name cant be shorter than 3 signs");
-                            anInterface.wiadomosci.append("Name cant be shorter than 3 signs\n");
+                            anInterface.messagesField.append("Name cant be shorter than 3 signs\n");
                         }
-                    } else if (message.equals("003")) {//send to everyone
+                    } else if (message.equals("003")) {//sendButton to everyone
 
                     } else if (message.equals("004")) {//whisper
 
                     } else if (message.equals("/help")) {
-                        anInterface.wiadomosci.append("\nInstrukcja używania:\n000 - echo\n001 - ping\n002 - change name\n003 [text] - send to everyone\n004 [text] - private message\n");
+                        anInterface.messagesField.append("\nInstrukcja używania:\n000 - echo\n001 - ping\n002 - change name\n003 [text] - sendButton to everyone\n004 [text] - private message\n");
                     } else {
                         clientHandle.printWriter.println(message);
                         clientHandle.printWriter.flush();
@@ -127,7 +127,7 @@ public class Client {
                 break;
             }
             if (!clientHandle.isConnected) {
-                anInterface.wiadomosci.append("Brak połączenia z serwerem\n");
+                anInterface.messagesField.append("Brak połączenia z serwerem\n");
                 anInterface.textField.setText("");
             }
         }
@@ -145,7 +145,7 @@ public class Client {
                     if (message.startsWith("000")) {
                         message = message.substring(3);
                         long time = Long.parseLong(message) / 1000000;
-                        anInterface.wiadomosci.append("Ping: " + time + " ms\n");
+                        anInterface.messagesField.append("Ping: " + time + " ms\n");
                         //System.out.println("Ping: " + time + " ms");
                     } else if (message.startsWith("001")) {
                         connectedList.clear();
@@ -156,12 +156,12 @@ public class Client {
                         showConnected();
                     } else {
                         //System.out.println(message);
-                        anInterface.wiadomosci.append(message + "\n");
-                        anInterface.wiadomosci.setCaretPosition(anInterface.wiadomosci.getDocument().getLength());
+                        anInterface.messagesField.append(message + "\n");
+                        anInterface.messagesField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
                     }
                 }
             } catch (IOException ex) {
-                anInterface.wiadomosci.setText("\nLost connection to server.");
+                anInterface.messagesField.setText("\nLost connection to server.");
                 clientHandle.isConnected = false;
                 ex.printStackTrace();
             }
@@ -175,13 +175,13 @@ public class Client {
         clientHandle.showStatus();
 
 
-        anInterface.send.addActionListener(new sendToAll());
+        anInterface.sendButton.addActionListener(new sendToAll());
         anInterface.textField.addActionListener(new sendToAll());
         anInterface.m21.addActionListener(new connectToServer());
         anInterface.m22.addActionListener(new checkConnection());
     }
 
-    //003 -send to all
+    //003 -sendButton to all
     public class sendToAll implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             String message = "003" + anInterface.textField.getText();
@@ -201,7 +201,7 @@ public class Client {
                 clientHandle.printWriter.println(message);
                 clientHandle.printWriter.flush();
             } else {
-                anInterface.wiadomosci.append("Check your connection with server.\n");
+                anInterface.messagesField.append("Check your connection with server.\n");
             }
         }
     }

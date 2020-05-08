@@ -90,8 +90,12 @@ public class Server {
         } else if (message.startsWith("003")) {//send to everyone
             message = message.substring(3);
             for (int i = 0; i < clientHandles.size(); i++) {
-                //if (i == index) continue;
-                clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name + ": " + message);
+                if (i == index) {
+                    clientHandles.get(i).printMessageWriter.println("You: " + message);
+                    clientHandles.get(i).printMessageWriter.flush();
+                    continue;
+                };
+                clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name +"@"+ clientHandles.get(index).index +": " + message);
                 clientHandles.get(i).printMessageWriter.flush();
             }
         }else {
