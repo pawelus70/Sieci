@@ -10,9 +10,9 @@ public class Server {
     ArrayList<ClientHandle> clientHandles;
     int amountConnected = 0;
     short anonymousUsers =0;
-    int usersIndex = 0;
+    int usersIndex = 1;
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    // private final ExecutorService threadPool = Executors.newFixedThreadPool(200);
+    private final ScheduledExecutorService timedExecutorPool =Executors.newScheduledThreadPool(1);
     private final ExecutorService threadPool = Executors.newWorkStealingPool();
 
     Interface anInterface = new Interface();
@@ -23,7 +23,7 @@ public class Server {
         for (int i = 0; i < clientHandles.size(); i++) {
             clientHandles.get(index).printMessageWriter.println(clientHandles.get(i).name);
             clientHandles.get(index).printMessageWriter.flush();
-            clientHandles.get(index).printMessageWriter.println(clientHandles.get(i).index);
+            clientHandles.get(index).printMessageWriter.println(i);
             clientHandles.get(index).printMessageWriter.flush();
         }
     }
@@ -57,18 +57,20 @@ public class Server {
 
         public void run() {
             String message;
+            this.index =clientHandles.indexOf(this);
             try {
                 while ((message = bufferedMessageReader.readLine()) != null) {
                     time = System.nanoTime();
                     //System.out.println(name + ", " + LocalTime.now().withNano(0) + ", " + message);
                     anInterface.wiadomosci.append(name + ", " + LocalTime.now().withNano(0) + ", " + message + "\n");
                     anInterface.wiadomosci.setCaretPosition(anInterface.wiadomosci.getDocument().getLength());
-                    requestListener(message, index);
+                    requestListener(message, clientHandles.indexOf(this));
                 }
             } catch (IOException e) {
                 this.isConnected = false;
                 e.printStackTrace();
-                onDisconnection(index);
+                onDisconnection(clientHandles.indexOf(this));
+                clientHandles.remove(this);
             }
         }
 
@@ -95,7 +97,7 @@ public class Server {
                     clientHandles.get(i).printMessageWriter.flush();
                     continue;
                 };
-                clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name +"@"+ clientHandles.get(index).index +": " + message);
+                clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name +": " + message);
                 clientHandles.get(i).printMessageWriter.flush();
             }
         }else {
@@ -108,6 +110,8 @@ public class Server {
     public void run() {
         clientHandles = new ArrayList();   //client list
         anInterface.run();
+        showConnected();
+
         try {
             ServerSocket serverSocket = new ServerSocket(4242);
             //System.out.println("Server online. Server version (1.0.1).\n");
@@ -123,14 +127,12 @@ public class Server {
 
                 clientHandles.add(new ClientHandle(clientSocket, usersIndex)); //add client to database
                 threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //execute client thread
-                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine(); //set client name
+                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+usersIndex; //set client name
                 usersIndex+=1;
 
                 //System.out.println("Connected new Client has connected.\t" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress());
                 anInterface.logii.append("Connected new Client has connected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress() + "\n");
-                amountConnected = clientHandles.size() - 1;
-                showConnected();
-                usersConnected();
+                amountConnected +=1;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -138,29 +140,27 @@ public class Server {
     }
 
     public void onDisconnection(int index) {
-        anInterface.logii.append("User has disconnected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientHandles.get(index).name + "\n");
-        clientHandles.remove(index);
+        anInterface.logii.append("User has disconnected, " + LocalDate.now() + ", " + LocalTime.now().withNano(0) + ",  " + clientHandles.get(index).name +"@"+ clientHandles.get(index).index+"\n");
+        amountConnected -= 1;
 
-        amountConnected = clientHandles.size() - 1;
-        usersConnected();
     }
+
+
 
     public void showConnected() {
-        //System.out.println("Currently connected: ");
-        anInterface.logii.append("Currently connected: \n");
-        for (int i = 0; i < clientHandles.size(); i++) {
-            //System.out.println(clientHandles.get(i).socketMessage.getInetAddress() + ", At index: " + clientHandles.get(i).index + ", As: " + clientHandles.get(i).name + ", Is connected: " + clientHandles.get(i).isConnected);
-            anInterface.logii.append(clientHandles.get(i).socketMessage.getInetAddress() + ", At index: " + clientHandles.get(i).index + ", As: " + clientHandles.get(i).name + ", Is connected: " + clientHandles.get(i).isConnected + "\n");
+        final Runnable caller = new Runnable() {
+            @Override
+            public void run() {
+                anInterface.userss.setText("Users: " + (clientHandles.size()));
+                for (int i = 0; i < clientHandles.size(); i++) {
+                    anInterface.userss.append("\n" + clientHandles.get(i).name + "@" + i);
+                }
+            }
+        };
+        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 1, TimeUnit.SECONDS);
+        timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
         }
-        anInterface.logii.setCaretPosition(anInterface.logii.getDocument().getLength());
-    }
 
-    public void usersConnected(){
-        anInterface.userss.setText("Users:");
-        for (int i = 0; i < clientHandles.size(); i++) {
-            anInterface.userss.append("\n" + clientHandles.get(i).name + "@"+clientHandles.get(i).index);
-        }
-    }
 
 
     public static void main(String[] argv) {

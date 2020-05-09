@@ -36,14 +36,12 @@ public class Client {
         Socket socket;
         BufferedReader bufferedReader;
         PrintWriter printWriter;
-        Boolean isConnected;
+        Boolean isConnected =false;
         InputStreamReader inputStreamReader;
         int index;
 
         public void showStatus() {
-            System.out.println("Is Connected: " + this.isConnected);
-            System.out.println("Connected as: " + this.name);
-            System.out.println("Your index is: " + this.index);
+            anInterface.userStatus.setText("You are connected: " + this.isConnected+"\nShown as: " + this.name+"#" + this.index);
             //System.out.println("To get list of commands type: \"help\"");
             anInterface.messagesField.append("To get list of commands type: \"/help\"\n");
         }
@@ -53,28 +51,40 @@ public class Client {
 
 
     public void connectToServer(String ip, int port) {
-        try {
-            clientHandle.socket = new Socket(ip, port);
-            clientHandle.isConnected = true;
-            //text
-            clientHandle.inputStreamReader = new InputStreamReader(clientHandle.socket.getInputStream());
-            clientHandle.bufferedReader = new BufferedReader(clientHandle.inputStreamReader);
-            clientHandle.printWriter = new PrintWriter(clientHandle.socket.getOutputStream());
-            threadPool.execute(new WarningReceiver());
-
-            //set name
-            whatIsYourName();
-            askForConnected();
-        } catch (Exception e) {
-            //System.out.println("Can't connect with server.");
-            anInterface.messagesField.append("Can't connect with server\n");
-            clientHandle.socket = null;
-            clientHandle.isConnected = false;
-            clientHandle.printWriter = null;
-            clientHandle.bufferedReader = null;
-            clientHandle.inputStreamReader = null;
+        if (!clientHandle.isConnected) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                clientHandle.socket = new Socket(ip, port);
+                clientHandle.isConnected = true;
+                //text
+                clientHandle.inputStreamReader = new InputStreamReader(clientHandle.socket.getInputStream());
+                clientHandle.bufferedReader = new BufferedReader(clientHandle.inputStreamReader);
+                clientHandle.printWriter = new PrintWriter(clientHandle.socket.getOutputStream());
+                threadPool.execute(new WarningReceiver());
+                clientHandle.isConnected = true;
+                //set name
+                whatIsYourName();
+                askForConnected();
+                clientHandle.showStatus();
+            } catch (Exception e) {
+                //System.out.println("Can't connect with server.");
+                anInterface.messagesField.append("Can't connect with server\n");
+                clientHandle.socket = null;
+                clientHandle.isConnected = false;
+                clientHandle.printWriter = null;
+                clientHandle.bufferedReader = null;
+                clientHandle.inputStreamReader = null;
+                clientHandle.isConnected = false;
+            }
+        }else{
+            anInterface.messagesField.append("You are already connected.\n");
         }
     }
+
 
     public void whatIsYourName() {
         clientHandle.printWriter.println(clientHandle.name);
@@ -161,7 +171,7 @@ public class Client {
                     }
                 }
             } catch (IOException ex) {
-                anInterface.messagesField.setText("\nLost connection to server.");
+                anInterface.messagesField.setText("Lost connection to server.\n");
                 clientHandle.isConnected = false;
                 ex.printStackTrace();
             }
@@ -172,7 +182,6 @@ public class Client {
         anInterface.run();
         clientHandle.name = anInterface.name;
         connectToServer(ip, port);
-        clientHandle.showStatus();
 
 
         anInterface.sendButton.addActionListener(new sendToAll());
@@ -229,7 +238,7 @@ public class Client {
             }
         };
 
-        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 0, 5, TimeUnit.SECONDS);
+        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 5, TimeUnit.SECONDS);
         timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
     }
 
