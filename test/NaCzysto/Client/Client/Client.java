@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class Client {
     String ip = "127.0.0.1";
-    int port = 4242;
+    int port = 49152;
 
     Interface anInterface = new Interface();
     Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
@@ -126,8 +126,6 @@ public class Client {
 
                     } else if (message.equals("004")) {//whisper
 
-                    } else if (message.equals("/help")) {
-                        anInterface.messagesField.append("\nInstrukcja używania:\n000 - echo\n001 - ping\n002 - change name\n003 [text] - sendButton to everyone\n004 [text] - private message\n");
                     } else {
                         clientHandle.printWriter.println(message);
                         clientHandle.printWriter.flush();

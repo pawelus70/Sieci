@@ -113,7 +113,7 @@ public class Server {
         showConnected();
 
         try {
-            ServerSocket serverSocket = new ServerSocket(4242);
+            ServerSocket serverSocket = new ServerSocket(49152);
             //System.out.println("Server online. Server version (1.0.1).\n");
             anInterface.wiadomosci.append("Server online. Server version (1.0.1).\n");
 

@@ -20,50 +20,86 @@ public class Interface implements Runnable {
     JMenuItem m11, m12, m21, m22, m31, m32;
     JScrollPane messageScroll;
 
-
-    String bgColor = "#000000";
+    //Setup colors
+    String backgroundColor = "#000000";
     String fieldBgColor = "#f1e3cb";
     String fontColor = "#000000";
-    String buttonColor = "";
 
-    public class CustomButton extends JPanel{
+
+    public class CustomSquare extends JPanel{
         int sizeX = 150;
-        int sizeY =30;
-        String label = "Dupa";
+        int sizeY = 30;
+        String label = "";
+        int fPosX = sizeX / 2;
+        int fPosY = sizeY / 2;
+        String fColor = "#000000";
+        String bgColor = "#FFFFFF";
+        int fSize = 10;
+        boolean haveBorder = false;
 
-        CustomButton(){
+        //plain square
+        CustomSquare() {
+        }
+
+        ;
+
+        //designated size square
+        CustomSquare(int x, int y) {
+            sizeX = x;
+            sizeY = y;
+        }
+
+        ;
+
+        //designated size and color square
+        CustomSquare(int x, int y, String bgColor) {
+            sizeX = x;
+            sizeY = y;
+            this.bgColor = bgColor;
+        }
+
+        ;
+
+        //designated size and color square
+        //what text,  text relative position,text size, text color
+        CustomSquare(int x, int y, String bgColor, String label, int fSize, int fPosX, int fPosY, String fColor) {
+            sizeX = x;
+            sizeY = y;
+            this.bgColor = bgColor;
+
+            this.label = label;
+            this.fPosX = fPosX;
+            this.fPosY = fPosY;
+            this.fColor = fColor;
+            this.fSize = fSize;
         };
 
-        CustomButton(String a){
-            label=a;
-        };
-        CustomButton(int x,int y){
-            sizeX=x;
-            sizeY=y;
-        };
-        CustomButton(String s,int x,int y){
-            label = s;
-            sizeX=x;
-            sizeY=y;
-        };
 
-        protected void paintComponent(Graphics g){
+        protected void paintComponent(Graphics g) {
 
             //Wymuś rozmiar bo się pierdoli
-            super.setMaximumSize(new Dimension(sizeX,sizeY));
-            super.setMinimumSize(new Dimension(sizeX,sizeY));
-            super.setPreferredSize(new Dimension(sizeX,sizeY));
-            super.setSize(new Dimension(sizeX,sizeY));
-
-            super.setBackground(Color.decode(bgColor));
-            super.setBorder(new EmptyBorder(0,0,0,0));
+            super.setMaximumSize(new Dimension(sizeX, sizeY));
+            super.setMinimumSize(new Dimension(sizeX, sizeY));
+            super.setPreferredSize(new Dimension(sizeX, sizeY));
+            super.setSize(new Dimension(sizeX, sizeY));
+            super.setBackground(Color.decode(backgroundColor));
+            super.setBorder(new EmptyBorder(0, 0, 0, 0));
             super.paintComponent(g);
 
-            g.setColor(Color.GREEN);
-            g.fillRect(0,0,sizeX,sizeY);
+
+            g.setColor(Color.decode(bgColor));
+            g.fillRect(0, 0, sizeX, sizeY);
+
+            if (!label.equals("")) {
+                g.setFont(new Font("TimesRoman", Font.PLAIN, fSize));
+                g.setColor(Color.decode(fColor));
+                g.drawString(label, fPosX, fPosY);
+            }
 
         }
+
     }
+
 
     public class mouseListner implements MouseListener{
         @Override
@@ -205,7 +241,7 @@ public class Interface implements Runnable {
             inputPanel.add(textField);
             inputPanel.add(sendButton);
 
-            CustomButton customButton = new CustomButton();
+            CustomSquare customButton = new CustomSquare(30,30,"#FFFFFF");
 
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             menuPanel.setLayout(new GridBagLayout());
@@ -233,11 +269,15 @@ public class Interface implements Runnable {
 
 
             // all colors have to be in hex
-            frame.setBackground(Color.decode(bgColor));
-            inputPanel.setBackground(Color.decode(bgColor));
-            menuPanel.setBackground(Color.decode(bgColor));
-            messagePanel.setBackground(Color.decode(bgColor));
-            userPanel.setBackground(Color.decode(bgColor));
+
+
+
+
+            frame.setBackground(Color.decode(backgroundColor));
+            inputPanel.setBackground(Color.decode(backgroundColor));
+            menuPanel.setBackground(Color.decode(backgroundColor));
+            messagePanel.setBackground(Color.decode(backgroundColor));
+            userPanel.setBackground(Color.decode(backgroundColor));
 
             messagesField.setForeground(Color.decode(fontColor));
             userStatus.setForeground(Color.decode(fontColor));
