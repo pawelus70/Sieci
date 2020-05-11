@@ -24,6 +24,7 @@ public class Interface implements Runnable {
     String backgroundColor = "#000000";
     String fieldBgColor = "#f1e3cb";
     String fontColor = "#000000";
+    String buttonColor = "#FFFFFF";
 
 
     public class CustomSquare extends JPanel{
@@ -83,7 +84,7 @@ public class Interface implements Runnable {
             super.setPreferredSize(new Dimension(sizeX, sizeY));
             super.setSize(new Dimension(sizeX, sizeY));
             super.setBackground(Color.decode(backgroundColor));
-            super.setBorder(new EmptyBorder(0, 0, 0, 0));
+            super.setBorder(new EmptyBorder(2, 2, 2, 2));
             super.paintComponent(g);
 
 
@@ -193,8 +194,8 @@ public class Interface implements Runnable {
             // Głowny obszar tekstowy do wiadomości
 
             messageScroll = new JScrollPane(messagesField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            messageScroll.setMinimumSize(new Dimension(250, 400));
-            messageScroll.setPreferredSize(new Dimension(250, 400));
+            messageScroll.setMinimumSize(new Dimension(250, 700));
+            messageScroll.setPreferredSize(new Dimension(250, 700));
 
             messagesField.setEditable(false);
             messagesField.setLineWrap(true);
@@ -212,8 +213,8 @@ public class Interface implements Runnable {
             users.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
 
             JScrollPane usersScrollPane = new JScrollPane(users, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            usersScrollPane.setMinimumSize(new Dimension(200, 475));
-            usersScrollPane.setPreferredSize(new Dimension(200, 475));
+            usersScrollPane.setMinimumSize(new Dimension(200, 400));
+            usersScrollPane.setPreferredSize(new Dimension(200, 400));
 
 
             userStatus = new JTextArea();
@@ -231,8 +232,11 @@ public class Interface implements Runnable {
             frame.getContentPane().add(BorderLayout.WEST, userPanel);
             // frame.getContentPane().add(BorderLayout.WEST, users);
 
+            CustomSquare customSquare = new CustomSquare(200,20,buttonColor,"Change user name",12,12,12,"#000000");
 
             userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
+            userPanel.add(customSquare);
+            userPanel.add(Box.createRigidArea(new Dimension(200, 5)));
             userPanel.add(userStatus);
             userPanel.add(Box.createRigidArea(new Dimension(200, 5)));
             userPanel.add(usersScrollPane);
@@ -241,7 +245,7 @@ public class Interface implements Runnable {
             inputPanel.add(textField);
             inputPanel.add(sendButton);
 
-            CustomSquare customButton = new CustomSquare(30,30,"#FFFFFF");
+
 
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             menuPanel.setLayout(new GridBagLayout());
@@ -256,9 +260,6 @@ public class Interface implements Runnable {
             gridBagConstraints.insets = new Insets(0,0,0,0);
             menuPanel.add(menuBar,gridBagConstraints);
 
-            gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
-            gridBagConstraints.anchor = GridBagConstraints.EAST;
-            menuPanel.add(customButton,gridBagConstraints);
 
 
 
@@ -293,9 +294,9 @@ public class Interface implements Runnable {
 
             //userStatus.setBorder(new EmptyBorder(0,0,5,0));
 
-            userPanel.setBorder(new EmptyBorder(0, 0, 5, 5));
-            messagePanel.setBorder(new EmptyBorder(0, 0, 5, 0));
-            menuPanel.setBorder(new EmptyBorder(0, 0, 5, 0));
+            userPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+            messagePanel.setBorder(new EmptyBorder(5, 0, 5, 5));
+            menuPanel.setBorder(new EmptyBorder(0, 5, 5, 5));
             frame.setVisible(true);
 
             /////////********************************************////////////////
