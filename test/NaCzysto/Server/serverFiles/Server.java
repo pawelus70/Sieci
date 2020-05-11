@@ -1,10 +1,10 @@
-package Server;
+package serverFiles;
 import java.io.*;
 import java.net.*;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.concurrent.*;
-import Server.Interface;
+
 
 public class Server {
     ArrayList<ClientHandle> clientHandles;
@@ -127,7 +127,7 @@ public class Server {
 
                 clientHandles.add(new ClientHandle(clientSocket, usersIndex)); //add client to database
                 threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //execute client thread
-                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+usersIndex; //set client name
+                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+clientHandles.get(clientHandles.size() - 1).index; //set client name
                 usersIndex+=1;
 
                 //System.out.println("Connected new Client has connected.\t" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress());

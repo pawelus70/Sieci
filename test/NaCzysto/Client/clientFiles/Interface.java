@@ -1,4 +1,4 @@
-package Client;
+package clientFiles;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -25,6 +25,7 @@ public class Interface implements Runnable {
     String fieldBgColor = "#f1e3cb";
     String fontColor = "#000000";
     String buttonColor = "#FFFFFF";
+    String borderColor ="#f9b384";
 
 
     public class CustomSquare extends JPanel{
@@ -91,6 +92,10 @@ public class Interface implements Runnable {
             g.setColor(Color.decode(bgColor));
             g.fillRect(0, 0, sizeX, sizeY);
 
+            g.setColor(Color.decode(borderColor));
+            g.drawRect(0,0,sizeX-1,sizeY-1);
+            g.drawRect(1,1,sizeX-2,sizeY-2);
+
             if (!label.equals("")) {
                 g.setFont(new Font("TimesRoman", Font.PLAIN, fSize));
                 g.setColor(Color.decode(fColor));
@@ -130,6 +135,7 @@ public class Interface implements Runnable {
 
     }
 
+    CustomSquare customSquare;
 
     public void run() {
         try {
@@ -140,6 +146,7 @@ public class Interface implements Runnable {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(800, 800);
             frame.setMinimumSize(new Dimension(800, 800));
+            frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width-frame.getWidth())/2,(Toolkit.getDefaultToolkit().getScreenSize().height-frame.getHeight())/2);
 
             //Tworzenie menu i komponentów
             JMenuBar menuBar = new JMenuBar();
@@ -232,7 +239,7 @@ public class Interface implements Runnable {
             frame.getContentPane().add(BorderLayout.WEST, userPanel);
             // frame.getContentPane().add(BorderLayout.WEST, users);
 
-            CustomSquare customSquare = new CustomSquare(200,20,buttonColor,"Change user name",12,12,12,"#000000");
+            customSquare = new CustomSquare(200,20,buttonColor,"Change user name",12,12,12,"#000000");
 
             userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
             userPanel.add(customSquare);

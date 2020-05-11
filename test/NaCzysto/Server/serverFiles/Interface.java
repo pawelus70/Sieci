@@ -1,4 +1,4 @@
-package Server;
+package serverFiles;
 
 import javax.swing.*;
 import javax.swing.border.Border;

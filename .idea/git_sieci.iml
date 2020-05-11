@@ -9,6 +9,8 @@
       <sourceFolder url="file://$MODULE_DIR$/test/NaCzysto/Server" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Sieci-master/test/NaCzysto/Client" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Sieci-master/test/NaCzysto/Server" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test/NaCzysto/clientFiles" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test/NaCzysto/serverFiles" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

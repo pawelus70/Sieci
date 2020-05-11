@@ -1,8 +1,11 @@
-package Client;
+package clientFiles;
 
 
+import javax.swing.event.AncestorListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -13,7 +16,7 @@ public class Client {
     String ip = "127.0.0.1";
     int port = 49152;
 
-    Interface anInterface = new Interface();
+    public Interface anInterface = new Interface();
     Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
     ArrayList<ClientList> connectedList = new ArrayList<>();
 
@@ -186,19 +189,9 @@ public class Client {
         anInterface.textField.addActionListener(new sendToAll());
         anInterface.m21.addActionListener(new connectToServer());
         anInterface.m22.addActionListener(new checkConnection());
+        anInterface.customSquare.addMouseListener(new changeUserName());
     }
 
-    //003 -sendButton to all
-    public class sendToAll implements ActionListener{
-        public void actionPerformed(ActionEvent e) {
-            String message = "003" + anInterface.textField.getText();
-            anInterface.textField.setText("");
-            if(!(message.length()<4)) {
-                clientHandle.printWriter.println(message);
-                clientHandle.printWriter.flush();
-            }
-        }
-    }
     //echo 000
     public class checkConnection implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -209,6 +202,67 @@ public class Client {
                 clientHandle.printWriter.flush();
             } else {
                 anInterface.messagesField.append("Check your connection with server.\n");
+            }
+        }
+    }
+
+    //msg 001 period 5sec
+    public void askForConnected() {
+        final Runnable caller = new Runnable() {
+            public void run() {
+                clientHandle.printWriter.println("001");
+                clientHandle.printWriter.flush();
+            }
+        };
+
+        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 5, TimeUnit.SECONDS);
+        timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
+    }
+
+    //msg 002 - change user name
+    public class changeUserName implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            boolean isOk = false;
+            while(!isOk) {
+            String message ="";
+            DialogBox dialogBox = new DialogBox("Change User Name",anInterface,anInterface.backgroundColor,anInterface.buttonColor,anInterface.fontColor,anInterface.borderColor);
+            dialogBox.run();
+            while(message.equals("")) {
+                message = dialogBox.message;
+            }
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    //003 -sendButton to all
+    public class sendToAll implements ActionListener{
+        public void actionPerformed(ActionEvent e) {
+            String message = "003" + anInterface.textField.getText();
+            anInterface.textField.setText("");
+            if(!(message.length()<4)) {
+                clientHandle.printWriter.println(message);
+                clientHandle.printWriter.flush();
             }
         }
     }
@@ -227,18 +281,7 @@ public class Client {
         }
     }
 
-    //msg 001 period 5sec
-    public void askForConnected() {
-        final Runnable caller = new Runnable() {
-            public void run() {
-                clientHandle.printWriter.println("001");
-                clientHandle.printWriter.flush();
-            }
-        };
 
-        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 5, TimeUnit.SECONDS);
-        timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
-    }
 
     public static void main(String[] argv) {
         Client client = new Client();
