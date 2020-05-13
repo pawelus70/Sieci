@@ -223,15 +223,14 @@ public class Client {
     public class changeUserName implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            boolean isOk = false;
-            while(!isOk) {
-            String message ="";
-            DialogBox dialogBox = new DialogBox("Change User Name",anInterface,anInterface.backgroundColor,anInterface.buttonColor,anInterface.fontColor,anInterface.borderColor);
-            dialogBox.run();
-            while(message.equals("")) {
-                message = dialogBox.message;
+            String tempName;
+            tempName= anInterface.inputBox(false);
+            if(!(tempName.length()<4)){
+                clientHandle.name = tempName;
+                clientHandle.showStatus();
+                clientHandle.printWriter.println("002"+clientHandle.name);
             }
-            }
+
         }
 
         @Override

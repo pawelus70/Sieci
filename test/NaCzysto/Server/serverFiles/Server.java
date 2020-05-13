@@ -9,7 +9,6 @@ import java.util.concurrent.*;
 public class Server {
     ArrayList<ClientHandle> clientHandles;
     int amountConnected = 0;
-    short anonymousUsers =0;
     int usersIndex = 1;
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
     private final ScheduledExecutorService timedExecutorPool =Executors.newScheduledThreadPool(1);
@@ -88,7 +87,7 @@ public class Server {
         } else if (message.startsWith("001")) {//give list of users
             ShareClientList(index);
         } else if (message.startsWith("002")) {//change name
-            clientHandles.get(index).name = message.substring(3);
+            clientHandles.get(index).name = message.substring(3)+"#"+(index+1);
         } else if (message.startsWith("003")) {//send to everyone
             message = message.substring(3);
             for (int i = 0; i < clientHandles.size(); i++) {

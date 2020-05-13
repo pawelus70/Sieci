@@ -137,6 +137,43 @@ public class Interface implements Runnable {
 
     CustomSquare customSquare;
 
+    public String inputBox(boolean firstTime) {
+        String name = "";
+        if(firstTime){
+        while (true) {
+            name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
+            if (name != null) {
+                if (pattern.matcher(name).matches()) {
+                    break;
+                }
+            }
+            int input = JOptionPane.showConfirmDialog(frame, "Do you want to connect as Anonymous", "Choose action", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (input == 0) {
+                name = "Anonymous";
+                break;
+            } else if (input == 2) {
+                System.exit(1);
+            }
+            JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
+                    "Correct yourself", JOptionPane.ERROR_MESSAGE);
+            //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
+        }
+        }else{
+            name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
+            if (!(name.length()<4)) {
+                if (pattern.matcher(name).matches()) {
+                    JOptionPane.showMessageDialog(frame,"Name changed successfully","Name changed successfully",JOptionPane.INFORMATION_MESSAGE);
+                }}else{
+                    JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
+                            "Correct yourself", JOptionPane.ERROR_MESSAGE);
+                    name = "";
+                }
+            }
+
+
+    return name;
+    }
+
     public void run() {
         try {
             //System.out.println("Enter your name: ");
@@ -307,25 +344,7 @@ public class Interface implements Runnable {
             frame.setVisible(true);
 
             /////////********************************************////////////////
-            while (true) {
-
-                name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
-                if (name != null) {
-                    if (pattern.matcher(name).matches()) {
-                        break;
-                    }
-                }
-                int input = JOptionPane.showConfirmDialog(frame, "Do you want to connect as Anonymous", "Choose action", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (input == 0) {
-                    name = "Anonymous";
-                    break;
-                } else if (input == 2) {
-                    System.exit(1);
-                }
-                JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
-                        "Popraw", JOptionPane.ERROR_MESSAGE);
-                //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
-            }
+            name = inputBox(true);
 
         } catch (Exception ex) {
             ex.printStackTrace();
