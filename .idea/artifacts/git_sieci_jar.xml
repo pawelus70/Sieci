@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="git_sieci:jar">
+    <output-path>$PROJECT_DIR$/test/Out/artifacts/git_sieci_jar</output-path>
+    <root id="archive" name="git_sieci.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/test/NaCzysto/Client/clientFiles/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="git_sieci" />
+    </root>
+  </artifact>
+</component>

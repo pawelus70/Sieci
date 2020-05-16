@@ -19,6 +19,7 @@ public class Interface implements Runnable {
     JMenu m1, m2, m3;
     JMenuItem m11, m12, m21, m22, m31, m32;
     JScrollPane messageScroll;
+    JTabbedPane messageTabs;
 
     //Setup colors
     String backgroundColor = "#000000";
@@ -26,6 +27,7 @@ public class Interface implements Runnable {
     String fontColor = "#000000";
     String buttonColor = "#FFFFFF";
     String borderColor ="#f9b384";
+    String activeTabColor ="#F0F000";
 
 
     public class CustomSquare extends JPanel{
@@ -143,8 +145,13 @@ public class Interface implements Runnable {
         while (true) {
             name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
             if (name != null) {
-                if (pattern.matcher(name).matches()) {
-                    break;
+                if(!(name.length()<4)){
+                    if (pattern.matcher(name).matches()) {
+                        break;
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
+                            "Correct yourself", JOptionPane.ERROR_MESSAGE);
                 }
             }
             int input = JOptionPane.showConfirmDialog(frame, "Do you want to connect as Anonymous", "Choose action", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -154,8 +161,7 @@ public class Interface implements Runnable {
             } else if (input == 2) {
                 System.exit(1);
             }
-            JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
-                    "Correct yourself", JOptionPane.ERROR_MESSAGE);
+
             //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
         }
         }else{
@@ -172,6 +178,11 @@ public class Interface implements Runnable {
 
 
     return name;
+    }
+
+    public static class MessageField{
+        JTextArea textArea = new JTextArea();
+
     }
 
     public void run() {
@@ -236,6 +247,23 @@ public class Interface implements Runnable {
             textField.setPreferredSize(new Dimension(700, 25));
 
             // Głowny obszar tekstowy do wiadomości
+            UIManager.put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
+            UIManager.put("TabbedPane.selectedTabPadInsets",new Insets(0,0,0,0));
+            UIManager.put("TabbedPane.selectHighlight",null);
+            UIManager.put("TabbedPane.background", Color.decode(backgroundColor));
+            UIManager.put("TabbedPane.foreground",Color.decode(fontColor));
+            UIManager.put("TabbedPane.selected",Color.decode(activeTabColor));
+            UIManager.put("TabbedPane.darkShadow",Color.decode(backgroundColor));
+
+
+            messageTabs = new JTabbedPane(JTabbedPane.TOP);
+            messageTabs.setOpaque(true);
+
+            messageTabs.setMinimumSize(new Dimension(250, 700));
+            messageTabs.setPreferredSize(new Dimension(250, 700));
+
+
+
 
             messageScroll = new JScrollPane(messagesField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             messageScroll.setMinimumSize(new Dimension(250, 700));
@@ -247,6 +275,11 @@ public class Interface implements Runnable {
             messagesField.setMargin(new Insets(5, 5, 5, 5));
             // Wiadomoscii.setSize(new Dimension(600,400));
             //messagesField.setPreferredSize(new Dimension(250, 400));
+
+            messagePanel.setLayout(new BorderLayout());
+            //messagePanel.add(BorderLayout.CENTER,messagesField);
+            //messagePanel.add(BorderLayout.CENTER,messageTabs);
+            messagePanel.add(BorderLayout.CENTER, messageScroll);
 
             //Użytkownicy
             users = new JTextArea("Users:");
@@ -272,7 +305,7 @@ public class Interface implements Runnable {
             //Rzeczy do ramki
             frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
             frame.getContentPane().add(BorderLayout.NORTH, menuPanel);
-            frame.getContentPane().add(BorderLayout.CENTER, messagePanel);
+            frame.getContentPane().add(BorderLayout.CENTER, messageTabs);
             frame.getContentPane().add(BorderLayout.WEST, userPanel);
             // frame.getContentPane().add(BorderLayout.WEST, users);
 
@@ -308,9 +341,8 @@ public class Interface implements Runnable {
 
 
 
-            messagePanel.setLayout(new BorderLayout());
-            //messagePanel.add(BorderLayout.CENTER,messagesField);
-            messagePanel.add(BorderLayout.CENTER, messageScroll);
+
+
 
 
             // all colors have to be in hex
@@ -329,22 +361,32 @@ public class Interface implements Runnable {
             users.setForeground(Color.decode(fontColor));
             textField.setForeground(Color.decode(fontColor));
             messageScroll.setForeground(Color.decode(fontColor));
+            //messageTabs.setForeground(Color.decode(fontColor));
 
             messagesField.setBackground(Color.decode(fieldBgColor));
             userStatus.setBackground(Color.decode(fieldBgColor));
             users.setBackground(Color.decode(fieldBgColor));
             textField.setBackground(Color.decode(fieldBgColor));
             messageScroll.setBackground(Color.decode(fieldBgColor));
+            //messageTabs.setBackground(Color.decode(backgroundColor));
+
+
+
+
 
             //userStatus.setBorder(new EmptyBorder(0,0,5,0));
 
-            userPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-            messagePanel.setBorder(new EmptyBorder(5, 0, 5, 5));
+            userPanel.setBorder(new EmptyBorder(5, 5, 0, 5));
+            messagePanel.setBorder(new EmptyBorder(0,0,0,5));
             menuPanel.setBorder(new EmptyBorder(0, 5, 5, 5));
+            inputPanel.setBorder(new EmptyBorder(0,0,0,0));
+
+
+
             frame.setVisible(true);
 
             /////////********************************************////////////////
-            name = inputBox(true);
+
 
         } catch (Exception ex) {
             ex.printStackTrace();

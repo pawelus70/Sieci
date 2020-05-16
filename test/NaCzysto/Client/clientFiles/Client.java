@@ -9,6 +9,8 @@ import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Properties;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -18,11 +20,35 @@ public class Client {
 
     public Interface anInterface = new Interface();
     Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
+
     ArrayList<ClientList> connectedList = new ArrayList<>();
+    ArrayList<MessageField> messageFields = new ArrayList<>();
 
     private final ExecutorService threadPool = Executors.newFixedThreadPool(4);
     private final ScheduledExecutorService timedExecutorPool = Executors.newScheduledThreadPool(1);
 
+    public class GetPropVal{
+        Properties properties = new Properties();
+        FileInputStream inputStream;
+        String propFile = "client.config";
+
+        public void getProp(){
+            try{
+                inputStream = new FileInputStream(propFile);
+
+            }catch(FileNotFoundException e){
+                File file = new File(propFile);
+                try {
+                    file.createNewFile();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                e.printStackTrace();
+
+        }
+
+        }
+    }
 
     public class ClientList {
         String name;
@@ -46,7 +72,7 @@ public class Client {
         public void showStatus() {
             anInterface.userStatus.setText("You are connected: " + this.isConnected+"\nShown as: " + this.name+"#" + this.index);
             //System.out.println("To get list of commands type: \"help\"");
-            anInterface.messagesField.append("To get list of commands type: \"/help\"\n");
+           messageFields.get(0).messageField.append("To get list of commands type: \"/help\"\n");
         }
     }
 
@@ -61,6 +87,7 @@ public class Client {
                 e.printStackTrace();
             }
             try {
+                clientHandle.showStatus();
                 clientHandle.socket = new Socket(ip, port);
                 clientHandle.isConnected = true;
                 //text
@@ -75,7 +102,7 @@ public class Client {
                 clientHandle.showStatus();
             } catch (Exception e) {
                 //System.out.println("Can't connect with server.");
-                anInterface.messagesField.append("Can't connect with server\n");
+                messageFields.get(0).messageField.append("Can't connect with server\n");
                 clientHandle.socket = null;
                 clientHandle.isConnected = false;
                 clientHandle.printWriter = null;
@@ -84,7 +111,7 @@ public class Client {
                 clientHandle.isConnected = false;
             }
         }else{
-            anInterface.messagesField.append("You are already connected.\n");
+            messageFields.get(0).messageField.append("You are already connected.\n");
         }
     }
 
@@ -99,6 +126,8 @@ public class Client {
             e.printStackTrace();
         }
     }
+
+
 
 
     //TODO: akcje muszą mieć odobny przycisk.
@@ -120,6 +149,7 @@ public class Client {
                             } else {
                                 //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
                                 anInterface.messagesField.append("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.\n");
+                                messageFields.get(0).messageField.append("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.\n");
                             }
                         } else {
                             //System.out.println("Name cant be shorter than 3 signs");
@@ -172,17 +202,26 @@ public class Client {
                     }
                 }
             } catch (IOException ex) {
-                anInterface.messagesField.setText("Lost connection to server.\n");
+                messageFields.get(0).messageField.append("\nLost connection to server.\n");
                 clientHandle.isConnected = false;
                 ex.printStackTrace();
             }
         }
     }
 
-    public void run() {
+    public void run(){
         anInterface.run();
-        clientHandle.name = anInterface.name;
-        connectToServer(ip, port);
+
+
+
+
+        messageFields.add(new MessageField());
+        messageFields.get(0).createTab();
+        anInterface.messageTabs.addTab("All",messageFields.get(messageFields.size()-1).messageScroll);
+        anInterface.messageTabs.setBackgroundAt(0,java.awt.Color.decode(anInterface.buttonColor));
+
+        clientHandle.name = anInterface.name = anInterface.inputBox(true);
+        new GetPropVal().getProp();
 
 
         anInterface.sendButton.addActionListener(new sendToAll());
@@ -190,6 +229,8 @@ public class Client {
         anInterface.m21.addActionListener(new connectToServer());
         anInterface.m22.addActionListener(new checkConnection());
         anInterface.customSquare.addMouseListener(new changeUserName());
+
+        connectToServer(ip, port);
     }
 
     //echo 000
@@ -202,6 +243,7 @@ public class Client {
                 clientHandle.printWriter.flush();
             } else {
                 anInterface.messagesField.append("Check your connection with server.\n");
+                messageFields.get(0).messageField.append("Check your connection with server.\n");
             }
         }
     }
@@ -228,7 +270,9 @@ public class Client {
             if(!(tempName.length()<4)){
                 clientHandle.name = tempName;
                 clientHandle.showStatus();
-                clientHandle.printWriter.println("002"+clientHandle.name);
+                if(clientHandle.isConnected) {
+                    clientHandle.printWriter.println("002" + clientHandle.name);
+                }
             }
 
         }
@@ -268,6 +312,13 @@ public class Client {
 
     public class connectToServer implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            if (clientHandle.isConnected) {
+                clientHandle.socket = null;
+                clientHandle.printWriter = null;
+                clientHandle.bufferedReader = null;
+                clientHandle.inputStreamReader = null;
+                clientHandle.isConnected = false;
+            }
             connectToServer(ip, port);
         }
     }
@@ -282,7 +333,7 @@ public class Client {
 
 
 
-    public static void main(String[] argv) {
+    public static void main(String[] argv){
         Client client = new Client();
         client.run();
     }

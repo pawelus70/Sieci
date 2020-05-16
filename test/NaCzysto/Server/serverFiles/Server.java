@@ -117,6 +117,7 @@ public class Server {
             anInterface.wiadomosci.append("Server online. Server version (1.0.1).\n");
 
             while (true) {
+                Thread.sleep(10);
                 Socket clientSocket = serverSocket.accept(); //accept request
 
                 //receive connection message
