@@ -1,4 +1,5 @@
 package serverFiles;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -13,7 +14,7 @@ public class Server {
     int userUniqueID = 1; //Liczba połączeń
     int usersIndex = 1; //Index użytkowników
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    private final ScheduledExecutorService timedExecutorPool =Executors.newScheduledThreadPool(1); //Executory
+    private final ScheduledExecutorService timedExecutorPool = Executors.newScheduledThreadPool(1); //Executory
     private final ExecutorService threadPool = Executors.newWorkStealingPool();
 
     Interface anInterface = new Interface(); //Interfejs dołącz
@@ -60,7 +61,7 @@ public class Server {
 
         public void run() {//wykonywanie
             String message;//wiadomość
-            this.index =clientHandles.indexOf(this);//przypisanie indexu
+            this.index = clientHandles.indexOf(this);//przypisanie indexu
             try {
                 while ((message = bufferedMessageReader.readLine()) != null) {
                     time = System.nanoTime();//czas
@@ -91,25 +92,25 @@ public class Server {
         } else if (message.startsWith("001")) {//Podaj liste użytkowników
             ShareClientList(index);
         } else if (message.startsWith("002")) {//Zmień nick
-            clientHandles.get(index).name = message.substring(3)+"#"+clientHandles.get(index).userUniqueID;
+            clientHandles.get(index).name = message.substring(3) + "#" + clientHandles.get(index).userUniqueID;
         } else if (message.startsWith("003")) {//Wyślij każdemu
             message = message.substring(3);
             for (int i = 0; i < clientHandles.size(); i++) {
-                if(message.startsWith("Server: ")){
+                if (message.startsWith("Server: ")) {
                     clientHandles.get(i).printMessageWriter.println(message);
                     clientHandles.get(i).printMessageWriter.flush();
-                }else {
+                } else {
                     if (i == index) {
                         clientHandles.get(i).printMessageWriter.println("You: " + message);
                         clientHandles.get(i).printMessageWriter.flush();
                         continue;
-                    }else {
+                    } else {
                         clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name + ": " + message);
                         clientHandles.get(i).printMessageWriter.flush();
                     }
                 }
             }
-        }else if(message.startsWith("004")){
+        } else if (message.startsWith("004")) {
 
         } else {
             clientHandles.get(index).printMessageWriter.println("Unrecognizable request");
@@ -141,14 +142,14 @@ public class Server {
 
                 clientHandles.add(new ClientHandle(clientSocket, usersIndex, userUniqueID)); //Dodaj klienta do bazy
                 threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //Wykonaj wątek klienta
-                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+ clientHandles.get(clientHandles.size() - 1).userUniqueID; //pobierz imię klienta
+                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine() + "#" + clientHandles.get(clientHandles.size() - 1).userUniqueID; //pobierz imię klienta
 
 
-                usersIndex+=1; //I index
+                usersIndex += 1; //I index
 
                 //System.out.println("Connected new Client has connected.\t" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress());
                 anInterface.logii.append("Connected new Client has connected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress() + "\n");//Powiadomienie
-                userUniqueID +=1;
+                userUniqueID += 1;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -156,11 +157,10 @@ public class Server {
     }
 
     public void onDisconnection(int index) {//Gdy rozłączenie
-        anInterface.logii.append("User has disconnected, " + LocalDate.now() + ", " + LocalTime.now().withNano(0) + ",  " + clientHandles.get(index).name +"@"+ clientHandles.get(index).index+"\n");
+        anInterface.logii.append("User has disconnected, " + LocalDate.now() + ", " + LocalTime.now().withNano(0) + ",  " + clientHandles.get(index).name + "@" + clientHandles.get(index).index + "\n");
 
 
     }
-
 
 
     public void showConnected() {//Ilu użytkoników
@@ -175,20 +175,20 @@ public class Server {
         };
         final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 1, TimeUnit.SECONDS);
         timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
-        }
+    }
 
-        public class ServerSendButton implements ActionListener{
+    public class ServerSendButton implements ActionListener {
         String message;
 
 
-            public void actionPerformed(ActionEvent e) {
-                message = "003Server: " + anInterface.tf.getText() + "\n";
-                anInterface.wiadomosci.append(message);
-                requestListener(message, -1);
-                anInterface.tf.setText("");
+        public void actionPerformed(ActionEvent e) {
+            message = "003Server: " + anInterface.tf.getText() + "\n";
+            anInterface.wiadomosci.append(message);
+            requestListener(message, -1);
+            anInterface.tf.setText("");
 
-            }
         }
+    }
 
     public static void main(String[] argv) {//Start serwer
         Server client = new Server();

@@ -28,7 +28,6 @@ public class Client {
     private final ScheduledExecutorService timedExecutorPool = Executors.newScheduledThreadPool(1);
 
 
-
     public class ClientList {
         String name;
         int index;
@@ -44,12 +43,12 @@ public class Client {
         Socket socket;
         BufferedReader bufferedReader;
         PrintWriter printWriter;
-        Boolean isConnected =false;
+        Boolean isConnected = false;
         InputStreamReader inputStreamReader;
         int userUniqueId;
 
         public void showStatus() {
-            anInterface.userStatus.setText("You are connected: " + this.isConnected+"\nShown as: " + this.name+"#" + this.userUniqueId);
+            anInterface.userStatus.setText("You are connected: " + this.isConnected + "\nShown as: " + this.name + "#" + this.userUniqueId);
             //System.out.println("To get list of commands type: \"help\"");
 
         }
@@ -90,7 +89,7 @@ public class Client {
                 clientHandle.inputStreamReader = null;
                 clientHandle.isConnected = false;
             }
-        }else{
+        } else {
             messageFields.get(0).messageField.append("You are already connected.\n");
         }
     }
@@ -107,7 +106,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
 
 
     public class WarningReceiver implements Runnable {
@@ -146,21 +144,27 @@ public class Client {
         }
     }
 
-    public void run(){
+    public void run() {
         anInterface.run();
 
 
         messageFields.add(new MessageField());
         messageFields.get(0).createTab();
 
-        anInterface.messageTabs.addTab("All",messageFields.get(0).messageScroll);
-        anInterface.messageTabs.setBackgroundAt(0,java.awt.Color.decode(anInterface.buttonColor));
+        anInterface.messageTabs.addTab("All", messageFields.get(0).messageScroll);
+        anInterface.messageTabs.setBackgroundAt(0, java.awt.Color.decode(anInterface.buttonColor));
 
         messageFields.add(new MessageField());
         messageFields.get(1).createTab();
 
-        anInterface.messageTabs.addTab("All Chat",messageFields.get(1).messageScroll);
-        anInterface.messageTabs.setBackgroundAt(1,java.awt.Color.decode(anInterface.buttonColor));
+        anInterface.messageTabs.addTab("All Chat", messageFields.get(1).messageScroll);
+        anInterface.messageTabs.setBackgroundAt(1, java.awt.Color.decode(anInterface.buttonColor));
+
+        messageFields.add(new MessageField());
+        messageFields.get(2).createTab();
+
+        anInterface.messageTabs.addTab("Whispers", messageFields.get(2).messageScroll);
+        anInterface.messageTabs.setBackgroundAt(2, java.awt.Color.decode(anInterface.buttonColor));
 
         clientHandle.name = anInterface.name = anInterface.inputBox(true);
 
@@ -206,11 +210,11 @@ public class Client {
         @Override
         public void mouseClicked(MouseEvent e) {
             String tempName;
-            tempName= anInterface.inputBox(false);
-            if(!(tempName.length()<4)){
+            tempName = anInterface.inputBox(false);
+            if (!(tempName.length() < 4)) {
                 clientHandle.name = tempName;
                 clientHandle.showStatus();
-                if(clientHandle.isConnected) {
+                if (clientHandle.isConnected) {
                     clientHandle.printWriter.println("002" + clientHandle.name);
                 }
             }
@@ -239,45 +243,46 @@ public class Client {
     }
 
     //003 -sendButton to all + whisper
-    public class sendToAll implements ActionListener{
+    public class sendToAll implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if(clientHandle.isConnected){
-            String message = anInterface.textField.getText();
-            String userIDStart = "" + message.indexOf("#");
-            String userIDStop = "" + message.indexOf(":");
-            String targetID;
-            if (!(userIDStart.equals("-1") || userIDStop.equals("-1"))) {
-                Pattern pattern = Pattern.compile("\\d+");
-                targetID = message.substring(message.indexOf("#")+1, message.indexOf(":"));
-                if(pattern.matcher(targetID).matches()){
-                    messageFields.get(0).messageField.append("Whispered to: " + message.trim());
-                    clientHandle.printWriter.println("004"+"@"+ message.trim());
-                }else{
-                    messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
-                }
-                //String message = "003" + anInterface.textField.getText();
-            } else if (userIDStart.equals("-1") ^ userIDStop.equals("-1")) {
-                messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
-            } else {
-                anInterface.textField.setText("");
-                if (!(message.length() < 4)) {
-                    clientHandle.printWriter.println("003" + message.trim());
+            if (clientHandle.isConnected) {
+                String message = anInterface.textField.getText();
+                String userIDStart = "" + message.indexOf("#");
+                String userIDStop = "" + message.indexOf(":");
+                String targetID;
+                message = message.trim();
+                if(!(message.startsWith("@"))){
+                    anInterface.textField.setText("");
+                    clientHandle.printWriter.println("003" + message);
                     clientHandle.printWriter.flush();
+                }else{
+                    if (!(userIDStart.equals("-1") || userIDStop.equals("-1"))) {
+                        Pattern pattern = Pattern.compile("\\d+");
+                        targetID = message.substring(message.indexOf("#") + 1, message.indexOf(":"));
+                        if (pattern.matcher(targetID).matches()) {
+                            messageFields.get(0).messageField.append("Whispered to: " + message.trim());
+                            clientHandle.printWriter.println("004" + "@" + message.trim());
+                        } else {
+                            messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
+                        }
+                        //String message = "003" + anInterface.textField.getText();
+                    } else if (userIDStart.equals("-1") ^ userIDStop.equals("-1")) {
+                        messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
+                    }
                 }
-            }
-        }else{
+
+            } else {
                 messageFields.get(0).messageField.append("Check your connection with server.\n");
             }
+        }
     }
-    }
-
 
 
     public class connectToServer implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (!clientHandle.isConnected) {
                 connectToServer(ip, port);
-            }else{
+            } else {
                 messageFields.get(0).messageField.append("You are already connected");
             }
 
@@ -286,18 +291,17 @@ public class Client {
 
     public void showConnected() {
         anInterface.users.setText("Users:\n");
-        for (int i=0; i<connectedList.size();i++) {
+        for (int i = 0; i < connectedList.size(); i++) {
             //System.out.println(clientList.name + " #" + clientList.index);
-            if(connectedList.get(i).name.equals(clientHandle.name)) {
+            if (connectedList.get(i).name.equals(clientHandle.name)) {
                 continue;
             }
-            anInterface.users.append(connectedList.get(i).name  + "\n");
+            anInterface.users.append(connectedList.get(i).name + "\n");
         }
     }
 
 
-
-    public static void main(String[] argv){
+    public static void main(String[] argv) {
         Client client = new Client();
         client.run();
     }

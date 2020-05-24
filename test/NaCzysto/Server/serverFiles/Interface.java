@@ -37,8 +37,8 @@ public class Interface implements Runnable {
         //Tworzenie panelu
         JPanel panel = new JPanel(); //Panel
         JLabel label = new JLabel("Napisz coś!");
-        tf.setPreferredSize(new Dimension(500,50));
-        tf.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10,10,10,10)));
+        tf.setPreferredSize(new Dimension(500, 50));
+        tf.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         // panel.add(Users);
         panel.add(label); //Dodawanie wszystko we flowLayout
@@ -51,7 +51,7 @@ public class Interface implements Runnable {
         wiadomosci.setLineWrap(true); //Zawijanie
         wiadomosci.setWrapStyleWord(true);
         // Wiadomoscii.setSize(new Dimension(600,400));
-        wiadomosci.setSize(new Dimension(250,400));
+        wiadomosci.setSize(new Dimension(250, 400));
         wiadomosci.setBackground(new Color(245, 245, 245)); //Kolor tła
 
         //Użytkownicy

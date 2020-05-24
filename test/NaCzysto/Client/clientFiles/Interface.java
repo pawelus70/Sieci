@@ -26,11 +26,11 @@ public class Interface implements Runnable {
     String fieldBgColor = "#f1e3cb";
     String fontColor = "#000000";
     String buttonColor = "#FFFFFF";
-    String borderColor ="#f9b384";
-    String activeTabColor ="#F0F000";
+    String borderColor = "#f9b384";
+    String activeTabColor = "#F0F000";
 
 
-    public class CustomSquare extends JPanel{
+    public class CustomSquare extends JPanel {
         int sizeX = 150;
         int sizeY = 30;
         String label = "";
@@ -45,15 +45,11 @@ public class Interface implements Runnable {
         CustomSquare() {
         }
 
-        ;
-
         //designated size square
         CustomSquare(int x, int y) {
             sizeX = x;
             sizeY = y;
         }
-
-        ;
 
         //designated size and color square
         CustomSquare(int x, int y, String bgColor) {
@@ -61,8 +57,6 @@ public class Interface implements Runnable {
             sizeY = y;
             this.bgColor = bgColor;
         }
-
-        ;
 
         //designated size and color square
         //what text,  text relative position,text size, text color
@@ -76,7 +70,7 @@ public class Interface implements Runnable {
             this.fPosY = fPosY;
             this.fColor = fColor;
             this.fSize = fSize;
-        };
+        }
 
 
         protected void paintComponent(Graphics g) {
@@ -95,8 +89,8 @@ public class Interface implements Runnable {
             g.fillRect(0, 0, sizeX, sizeY);
 
             g.setColor(Color.decode(borderColor));
-            g.drawRect(0,0,sizeX-1,sizeY-1);
-            g.drawRect(1,1,sizeX-2,sizeY-2);
+            g.drawRect(0, 0, sizeX - 1, sizeY - 1);
+            g.drawRect(1, 1, sizeX - 2, sizeY - 2);
 
             if (!label.equals("")) {
                 g.setFont(new Font("TimesRoman", Font.PLAIN, fSize));
@@ -109,7 +103,7 @@ public class Interface implements Runnable {
     }
 
 
-    public class mouseListner implements MouseListener{
+    public class mouseListner implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
 
@@ -127,7 +121,7 @@ public class Interface implements Runnable {
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            ((JMenu)e.getSource()).doClick(30);
+            ((JMenu) e.getSource()).doClick(30);
         }
 
         @Override
@@ -141,46 +135,47 @@ public class Interface implements Runnable {
 
     public String inputBox(boolean firstTime) {
         String name = "";
-        if(firstTime){
-        while (true) {
-            name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
-            if (name != null) {
-                if(!(name.length()<4)){
-                    if (pattern.matcher(name).matches()) {
-                        break;
+        if (firstTime) {
+            while (true) {
+                name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
+                if (name != null) {
+                    if (!(name.length() < 4)) {
+                        if (pattern.matcher(name).matches()) {
+                            break;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
+                                "Correct yourself", JOptionPane.ERROR_MESSAGE);
                     }
-                }else{
-                    JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
-                            "Correct yourself", JOptionPane.ERROR_MESSAGE);
                 }
-            }
-            int input = JOptionPane.showConfirmDialog(frame, "Do you want to connect as Anonymous", "Choose action", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (input == 0) {
-                name = "Anonymous";
-                break;
-            } else if (input == 2) {
-                System.exit(1);
-            }
+                int input = JOptionPane.showConfirmDialog(frame, "Do you want to connect as Anonymous", "Choose action", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (input == 0) {
+                    name = "Anonymous";
+                    break;
+                } else if (input == 2) {
+                    System.exit(1);
+                }
 
-            //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
-        }
-        }else{
+                //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
+            }
+        } else {
             name = JOptionPane.showInputDialog(frame, "Enter your name:", "Set your name", JOptionPane.QUESTION_MESSAGE); /*new BufferedReader(new InputStreamReader(System.in)).readLine()*/
-            if (!(name.length()<4)) {
+            if (!(name.length() < 4)) {
                 if (pattern.matcher(name).matches()) {
-                    JOptionPane.showMessageDialog(frame,"Name changed successfully","Name changed successfully",JOptionPane.INFORMATION_MESSAGE);
-                }}else{
-                    JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
-                            "Correct yourself", JOptionPane.ERROR_MESSAGE);
-                    name = "";
+                    JOptionPane.showMessageDialog(frame, "Name changed successfully", "Name changed successfully", JOptionPane.INFORMATION_MESSAGE);
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.",
+                        "Correct yourself", JOptionPane.ERROR_MESSAGE);
+                name = "";
             }
+        }
 
 
-    return name;
+        return name;
     }
 
-    public static class MessageField{
+    public static class MessageField {
         JTextArea textArea = new JTextArea();
 
     }
@@ -194,26 +189,24 @@ public class Interface implements Runnable {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(800, 800);
             frame.setMinimumSize(new Dimension(800, 800));
-            frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width-frame.getWidth())/2,(Toolkit.getDefaultToolkit().getScreenSize().height-frame.getHeight())/2);
+            frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - frame.getWidth()) / 2, (Toolkit.getDefaultToolkit().getScreenSize().height - frame.getHeight()) / 2);
 
             //Tworzenie menu i komponentów
             JMenuBar menuBar = new JMenuBar();
-
 
 
             m2 = new JMenu("Server");
             m3 = new JMenu("Help"); // Przycisk pomocy
 
 
-
             m2.addSeparator();
-            m2.setPreferredSize(new Dimension(51,30));
-            m2.setBorder(new MatteBorder(0,1,0,1,Color.BLACK));
+            m2.setPreferredSize(new Dimension(51, 30));
+            m2.setBorder(new MatteBorder(0, 1, 0, 1, Color.BLACK));
             m2.addMouseListener(new mouseListner());
 
             m3.addSeparator();
-            m3.setPreferredSize(new Dimension(37,30));
-            m3.setBorder(new MatteBorder(0,1,0,1,Color.BLACK));
+            m3.setPreferredSize(new Dimension(37, 30));
+            m3.setBorder(new MatteBorder(0, 1, 0, 1, Color.BLACK));
             m3.addMouseListener(new mouseListner());
 
 
@@ -242,13 +235,13 @@ public class Interface implements Runnable {
             textField.setPreferredSize(new Dimension(700, 25));
 
             // Głowny obszar tekstowy do wiadomości
-            UIManager.put("TabbedPane.contentBorderInsets", new Insets(0,0,0,0));
-            UIManager.put("TabbedPane.selectedTabPadInsets",new Insets(0,0,0,0));
-            UIManager.put("TabbedPane.selectHighlight",null);
+            UIManager.put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
+            UIManager.put("TabbedPane.selectedTabPadInsets", new Insets(0, 0, 0, 0));
+            UIManager.put("TabbedPane.selectHighlight", null);
             UIManager.put("TabbedPane.background", Color.decode(backgroundColor));
-            UIManager.put("TabbedPane.foreground",Color.decode(fontColor));
-            UIManager.put("TabbedPane.selected",Color.decode(activeTabColor));
-            UIManager.put("TabbedPane.darkShadow",Color.decode(backgroundColor));
+            UIManager.put("TabbedPane.foreground", Color.decode(fontColor));
+            UIManager.put("TabbedPane.selected", Color.decode(activeTabColor));
+            UIManager.put("TabbedPane.darkShadow", Color.decode(backgroundColor));
 
 
             messageTabs = new JTabbedPane(JTabbedPane.TOP);
@@ -256,8 +249,6 @@ public class Interface implements Runnable {
 
             messageTabs.setMinimumSize(new Dimension(250, 700));
             messageTabs.setPreferredSize(new Dimension(250, 700));
-
-
 
 
             messageScroll = new JScrollPane(messagesField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -304,7 +295,7 @@ public class Interface implements Runnable {
             frame.getContentPane().add(BorderLayout.WEST, userPanel);
             // frame.getContentPane().add(BorderLayout.WEST, users);
 
-            customSquare = new CustomSquare(200,20,buttonColor,"Change user name",12,12,12,"#000000");
+            customSquare = new CustomSquare(200, 20, buttonColor, "Change user name", 12, 12, 12, "#000000");
 
             userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
             userPanel.add(customSquare);
@@ -318,31 +309,21 @@ public class Interface implements Runnable {
             inputPanel.add(sendButton);
 
 
-
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             menuPanel.setLayout(new GridBagLayout());
-            menuPanel.setPreferredSize(new Dimension(800,30));
+            menuPanel.setPreferredSize(new Dimension(800, 30));
             gridBagConstraints.fill = GridBagConstraints.NONE;
 
             gridBagConstraints.anchor = GridBagConstraints.WEST;
-            gridBagConstraints.weightx =1;
-            gridBagConstraints.gridx=0;
-            gridBagConstraints.gridy=0;
+            gridBagConstraints.weightx = 1;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
             gridBagConstraints.ipadx = 0;
-            gridBagConstraints.insets = new Insets(0,0,0,0);
-            menuPanel.add(menuBar,gridBagConstraints);
-
-
-
-
-
-
-
+            gridBagConstraints.insets = new Insets(0, 0, 0, 0);
+            menuPanel.add(menuBar, gridBagConstraints);
 
 
             // all colors have to be in hex
-
-
 
 
             frame.setBackground(Color.decode(backgroundColor));
@@ -366,16 +347,12 @@ public class Interface implements Runnable {
             //messageTabs.setBackground(Color.decode(backgroundColor));
 
 
-
-
-
             //userStatus.setBorder(new EmptyBorder(0,0,5,0));
 
             userPanel.setBorder(new EmptyBorder(5, 5, 0, 5));
-            messagePanel.setBorder(new EmptyBorder(0,0,0,5));
+            messagePanel.setBorder(new EmptyBorder(0, 0, 0, 5));
             menuPanel.setBorder(new EmptyBorder(0, 5, 5, 5));
-            inputPanel.setBorder(new EmptyBorder(0,0,0,0));
-
+            inputPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 
             frame.setVisible(true);
