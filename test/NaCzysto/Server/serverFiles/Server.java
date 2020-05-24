@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 
 public class Server {
     ArrayList<ClientHandle> clientHandles; //Lista użytkowników
-    int amountConnected = 0; //Liczba połączeń
+    int userUniqueID = 1; //Liczba połączeń
     int usersIndex = 1; //Index użytkowników
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
     private final ScheduledExecutorService timedExecutorPool =Executors.newScheduledThreadPool(1); //Executory
@@ -36,9 +36,10 @@ public class Server {
         InputStreamReader inputMessageStreamReader;//Czytacz
         Boolean isConnected = false;//Połączenie
         PrintWriter printMessageWriter;//Pisarz
+        int userUniqueID;
 
 
-        public ClientHandle(Socket clientSocket, int index) {//Uzytkownik info
+        public ClientHandle(Socket clientSocket, int index, int userUniqueID) {//Uzytkownik info
             try {
                 socketMessage = clientSocket;
                 printMessageWriter = new PrintWriter(socketMessage.getOutputStream());
@@ -48,6 +49,7 @@ public class Server {
                 this.index = index;
                 printMessageWriter.println(index);
                 printMessageWriter.flush();
+                this.userUniqueID = userUniqueID;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -87,7 +89,7 @@ public class Server {
         } else if (message.startsWith("001")) {//Podaj liste użytkowników
             ShareClientList(index);
         } else if (message.startsWith("002")) {//Zmień nick
-            clientHandles.get(index).name = message.substring(3)+"#"+(index+1);
+            clientHandles.get(index).name = message.substring(3)+"#"+clientHandles.get(index).userUniqueID;
         } else if (message.startsWith("003")) {//Wyślij każdemu
             message = message.substring(3);
             for (int i = 0; i < clientHandles.size(); i++) {
@@ -125,14 +127,16 @@ public class Server {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
 
-                clientHandles.add(new ClientHandle(clientSocket, usersIndex)); //Dodaj klienta do bazy
+                clientHandles.add(new ClientHandle(clientSocket, usersIndex, userUniqueID)); //Dodaj klienta do bazy
                 threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //Wykonaj wątek klienta
-                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+clientHandles.get(clientHandles.size() - 1).index; //Ustaw nazwe klienta
+                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+ clientHandles.get(clientHandles.size() - 1).userUniqueID; //pobierz imię klienta
+
+
                 usersIndex+=1; //I index
 
                 //System.out.println("Connected new Client has connected.\t" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress());
                 anInterface.logii.append("Connected new Client has connected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress() + "\n");//Powiadomienie
-                amountConnected +=1;
+                userUniqueID +=1;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -141,7 +145,7 @@ public class Server {
 
     public void onDisconnection(int index) {//Gdy rozłączenie
         anInterface.logii.append("User has disconnected, " + LocalDate.now() + ", " + LocalTime.now().withNano(0) + ",  " + clientHandles.get(index).name +"@"+ clientHandles.get(index).index+"\n");
-        amountConnected -= 1;
+
 
     }
 

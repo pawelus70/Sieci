@@ -27,28 +27,7 @@ public class Client {
     private final ExecutorService threadPool = Executors.newFixedThreadPool(4);
     private final ScheduledExecutorService timedExecutorPool = Executors.newScheduledThreadPool(1);
 
-    public class GetPropVal{
-        Properties properties = new Properties();
-        FileInputStream inputStream;
-        String propFile = "client.config";
 
-        public void getProp(){
-            try{
-                inputStream = new FileInputStream(propFile);
-
-            }catch(FileNotFoundException e){
-                File file = new File(propFile);
-                try {
-                    file.createNewFile();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                e.printStackTrace();
-
-        }
-
-        }
-    }
 
     public class ClientList {
         String name;
@@ -67,12 +46,12 @@ public class Client {
         PrintWriter printWriter;
         Boolean isConnected =false;
         InputStreamReader inputStreamReader;
-        int index;
+        int userUniqueId;
 
         public void showStatus() {
-            anInterface.userStatus.setText("You are connected: " + this.isConnected+"\nShown as: " + this.name+"#" + this.index);
+            anInterface.userStatus.setText("You are connected: " + this.isConnected+"\nShown as: " + this.name+"#" + this.userUniqueId);
             //System.out.println("To get list of commands type: \"help\"");
-           messageFields.get(0).messageField.append("To get list of commands type: \"/help\"\n");
+
         }
     }
 
@@ -121,7 +100,8 @@ public class Client {
         clientHandle.printWriter.flush();
 
         try {
-            clientHandle.index = Integer.decode(clientHandle.bufferedReader.readLine());
+            //clientHandle.name += clientHandle.bufferedReader.readLine();
+            clientHandle.userUniqueId = Integer.decode(clientHandle.bufferedReader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -221,8 +201,6 @@ public class Client {
         anInterface.messageTabs.setBackgroundAt(0,java.awt.Color.decode(anInterface.buttonColor));
 
         clientHandle.name = anInterface.name = anInterface.inputBox(true);
-        new GetPropVal().getProp();
-
 
         anInterface.sendButton.addActionListener(new sendToAll());
         anInterface.textField.addActionListener(new sendToAll());
@@ -257,7 +235,7 @@ public class Client {
             }
         };
 
-        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 5, TimeUnit.SECONDS);
+        final ScheduledFuture<?> scheduledFuture = timedExecutorPool.scheduleAtFixedRate(caller, 1, 3, TimeUnit.SECONDS);
         timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
     }
 
@@ -312,22 +290,23 @@ public class Client {
 
     public class connectToServer implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (clientHandle.isConnected) {
-                clientHandle.socket = null;
-                clientHandle.printWriter = null;
-                clientHandle.bufferedReader = null;
-                clientHandle.inputStreamReader = null;
-                clientHandle.isConnected = false;
+            if (!clientHandle.isConnected) {
+                connectToServer(ip, port);
+            }else{
+                messageFields.get(0).messageField.append("You are already connected");
             }
-            connectToServer(ip, port);
+
         }
     }
 
     public void showConnected() {
         anInterface.users.setText("Users:\n");
-        for (ClientList clientList : connectedList) {
+        for (int i=0; i<connectedList.size();i++) {
             //System.out.println(clientList.name + " #" + clientList.index);
-            anInterface.users.append(clientList.name + "@" + clientList.index + "\n");
+            if(connectedList.get(i).name.equals(clientHandle.name)) {
+                continue;
+            }
+            anInterface.users.append(connectedList.get(i).name + "@" + connectedList.get(i).index + "\n");
         }
     }
 
