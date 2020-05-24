@@ -7,10 +7,11 @@ import java.awt.*;
 public class Interface implements Runnable {
 
     JTextField tf = new JTextField(); // Pole do pisania wiadomości
-    JButton send = new JButton("Wyślij");
-    JTextArea wiadomosci = new JTextArea();
-    JTextArea userss = new JTextArea("Użytkownicy:");
-    JTextArea logii = new JTextArea();
+    JButton send = new JButton("Wyślij"); //Przycisk
+    JTextArea wiadomosci = new JTextArea(); //Pole textowe
+    JTextArea userss = new JTextArea("Użytkownicy:"); //Pole tekstowe (uzytkownicy)
+    JTextArea logii = new JTextArea(); //Pole tekstowe (logi)
+
 
     public void run() {
 
@@ -20,16 +21,16 @@ public class Interface implements Runnable {
         Border border = BorderFactory.createLineBorder(Color.BLACK);
 
         //Tworzenie ramki
-        JFrame frame = new JFrame("Serwer");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 500);
+        JFrame frame = new JFrame("Serwer"); //Tytul
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Zamknij jak klikniesz X
+        frame.setSize(1000, 500); //Rozmiary "ramki"
 
 
         //Tworzenie menu i komponentów
-        JMenuBar mb = new JMenuBar();
+        JMenuBar mb = new JMenuBar(); //Opcje
         JMenu m2 = new JMenu("Pomoc"); // Przycisk pomocy
         JMenu m3 = new JMenu("Start/Stop"); // Przycisk Włączania serwera
-        mb.add(m2);
+        mb.add(m2);//Dodawanie podrzędnych
         mb.add(m3);
 
 
@@ -46,12 +47,12 @@ public class Interface implements Runnable {
 
         // Głowny obszar tekstowy do wiadomości
         JScrollPane Wiadomosci = new JScrollPane(wiadomosci);
-        wiadomosci.setEditable(false);
-        wiadomosci.setLineWrap(true);
+        wiadomosci.setEditable(false); //Brak edycji
+        wiadomosci.setLineWrap(true); //Zawijanie
         wiadomosci.setWrapStyleWord(true);
         // Wiadomoscii.setSize(new Dimension(600,400));
         wiadomosci.setSize(new Dimension(250,400));
-        wiadomosci.setBackground(new Color(245, 245, 245));
+        wiadomosci.setBackground(new Color(245, 245, 245)); //Kolor tła
 
         //Użytkownicy
 

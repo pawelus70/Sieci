@@ -7,19 +7,19 @@ import java.util.concurrent.*;
 
 
 public class Server {
-    ArrayList<ClientHandle> clientHandles;
-    int amountConnected = 0;
-    int usersIndex = 1;
+    ArrayList<ClientHandle> clientHandles; //Lista użytkowników
+    int amountConnected = 0; //Liczba połączeń
+    int usersIndex = 1; //Index użytkowników
     // private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    private final ScheduledExecutorService timedExecutorPool =Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService timedExecutorPool =Executors.newScheduledThreadPool(1); //Executory
     private final ExecutorService threadPool = Executors.newWorkStealingPool();
 
-    Interface anInterface = new Interface();
+    Interface anInterface = new Interface(); //Interfejs dołącz
 
-    public void ShareClientList(int index) {
-        clientHandles.get(index).printMessageWriter.println("001" + clientHandles.size());
-        clientHandles.get(index).printMessageWriter.flush();
-        for (int i = 0; i < clientHandles.size(); i++) {
+    public void ShareClientList(int index) { //Lista użytkowników
+        clientHandles.get(index).printMessageWriter.println("001" + clientHandles.size()); //indexy
+        clientHandles.get(index).printMessageWriter.flush(); //przekazanie
+        for (int i = 0; i < clientHandles.size(); i++) { //WYpisz wszystko
             clientHandles.get(index).printMessageWriter.println(clientHandles.get(i).name);
             clientHandles.get(index).printMessageWriter.flush();
             clientHandles.get(index).printMessageWriter.println(i);
@@ -27,18 +27,18 @@ public class Server {
         }
     }
 
-    public class ClientHandle implements Runnable {
-        String name;
-        int index;
-        Long time;
-        Socket socketMessage;
-        BufferedReader bufferedMessageReader;
-        InputStreamReader inputMessageStreamReader;
-        Boolean isConnected = false;
-        PrintWriter printMessageWriter;
+    public class ClientHandle implements Runnable {//Tak zwany uchwyt Użytkownika
+        String name;//nick
+        int index;//index
+        Long time;//czas
+        Socket socketMessage;//wiadomość socketu
+        BufferedReader bufferedMessageReader;//Czytnik
+        InputStreamReader inputMessageStreamReader;//Czytacz
+        Boolean isConnected = false;//Połączenie
+        PrintWriter printMessageWriter;//Pisarz
 
 
-        public ClientHandle(Socket clientSocket, int index) {
+        public ClientHandle(Socket clientSocket, int index) {//Uzytkownik info
             try {
                 socketMessage = clientSocket;
                 printMessageWriter = new PrintWriter(socketMessage.getOutputStream());
@@ -54,29 +54,29 @@ public class Server {
             }
         }
 
-        public void run() {
-            String message;
-            this.index =clientHandles.indexOf(this);
+        public void run() {//wykonywanie
+            String message;//wiadomość
+            this.index =clientHandles.indexOf(this);//przypisanie indexu
             try {
                 while ((message = bufferedMessageReader.readLine()) != null) {
-                    time = System.nanoTime();
+                    time = System.nanoTime();//czas
                     //System.out.println(name + ", " + LocalTime.now().withNano(0) + ", " + message);
-                    anInterface.wiadomosci.append(name + ", " + LocalTime.now().withNano(0) + ", " + message + "\n");
-                    anInterface.wiadomosci.setCaretPosition(anInterface.wiadomosci.getDocument().getLength());
-                    requestListener(message, clientHandles.indexOf(this));
+                    anInterface.wiadomosci.append(name + ", " + LocalTime.now().withNano(0) + ", " + message + "\n");//dodawanie wiadomości
+                    anInterface.wiadomosci.setCaretPosition(anInterface.wiadomosci.getDocument().getLength());//Ustawianie "karetki"
+                    requestListener(message, clientHandles.indexOf(this));//wiad
                 }
             } catch (IOException e) {
                 this.isConnected = false;
                 e.printStackTrace();
                 onDisconnection(clientHandles.indexOf(this));
-                clientHandles.remove(this);
+                clientHandles.remove(this);//Usuń
             }
         }
 
     }
 
 
-    public void requestListener(String message, int index) {
+    public void requestListener(String message, int index) {//Nasłuchiwanie i warunki kodów
         if (message.startsWith("000")) { //Echo
 
             String TempTime = message.substring(3);
@@ -84,11 +84,11 @@ public class Server {
             clientHandles.get(index).printMessageWriter.flush();
 
 
-        } else if (message.startsWith("001")) {//give list of users
+        } else if (message.startsWith("001")) {//Podaj liste użytkowników
             ShareClientList(index);
-        } else if (message.startsWith("002")) {//change name
+        } else if (message.startsWith("002")) {//Zmień nick
             clientHandles.get(index).name = message.substring(3)+"#"+(index+1);
-        } else if (message.startsWith("003")) {//send to everyone
+        } else if (message.startsWith("003")) {//Wyślij każdemu
             message = message.substring(3);
             for (int i = 0; i < clientHandles.size(); i++) {
                 if (i == index) {
@@ -107,31 +107,31 @@ public class Server {
     }
 
     public void run() {
-        clientHandles = new ArrayList();   //client list
-        anInterface.run();
-        showConnected();
+        clientHandles = new ArrayList();   //Lista klientów
+        anInterface.run(); //Interfejs
+        showConnected();//Użytkownicy
 
         try {
-            ServerSocket serverSocket = new ServerSocket(49152);
+            ServerSocket serverSocket = new ServerSocket(49152);//Otwórz socket
             //System.out.println("Server online. Server version (1.0.1).\n");
-            anInterface.wiadomosci.append("Server online. Server version (1.0.1).\n");
+            anInterface.wiadomosci.append("Server online. Server version (1.0.1).\n");//Info
 
             while (true) {
-                Thread.sleep(10);
-                Socket clientSocket = serverSocket.accept(); //accept request
+                Thread.sleep(10);//Wątek
+                Socket clientSocket = serverSocket.accept(); //Akceptuj żądanie
 
-                //receive connection message
+                //Odbieranie wiadomości połączenia
                 InputStreamReader inputStreamReader = new InputStreamReader(clientSocket.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
 
-                clientHandles.add(new ClientHandle(clientSocket, usersIndex)); //add client to database
-                threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //execute client thread
-                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+clientHandles.get(clientHandles.size() - 1).index; //set client name
-                usersIndex+=1;
+                clientHandles.add(new ClientHandle(clientSocket, usersIndex)); //Dodaj klienta do bazy
+                threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //Wykonaj wątek klienta
+                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine()+"#"+clientHandles.get(clientHandles.size() - 1).index; //Ustaw nazwe klienta
+                usersIndex+=1; //I index
 
                 //System.out.println("Connected new Client has connected.\t" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress());
-                anInterface.logii.append("Connected new Client has connected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress() + "\n");
+                anInterface.logii.append("Connected new Client has connected.\n" + LocalDate.now() + ", " + LocalTime.now().withNano(0) + " " + clientSocket.getInetAddress() + "\n");//Powiadomienie
                 amountConnected +=1;
             }
         } catch (Exception ex) {
@@ -139,7 +139,7 @@ public class Server {
         }
     }
 
-    public void onDisconnection(int index) {
+    public void onDisconnection(int index) {//Gdy rozłączenie
         anInterface.logii.append("User has disconnected, " + LocalDate.now() + ", " + LocalTime.now().withNano(0) + ",  " + clientHandles.get(index).name +"@"+ clientHandles.get(index).index+"\n");
         amountConnected -= 1;
 
@@ -147,13 +147,13 @@ public class Server {
 
 
 
-    public void showConnected() {
+    public void showConnected() {//Ilu użytkoników
         final Runnable caller = new Runnable() {
             @Override
             public void run() {
-                anInterface.userss.setText("Users: " + (clientHandles.size()));
+                anInterface.userss.setText("Users: " + (clientHandles.size())); //info o rozmiarze
                 for (int i = 0; i < clientHandles.size(); i++) {
-                    anInterface.userss.append("\n" + clientHandles.get(i).name + "@" + i);
+                    anInterface.userss.append("\n" + clientHandles.get(i).name + "@" + i);//Wypis
                 }
             }
         };
@@ -163,7 +163,7 @@ public class Server {
 
 
 
-    public static void main(String[] argv) {
+    public static void main(String[] argv) {//Start serwer
         Server client = new Server();
         client.run();
     }
