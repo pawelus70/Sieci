@@ -1,3 +1,7 @@
+//Createt by Gabriel Ćwiek and Paweł Blak
+//Last update date: 24.05.2020
+
+
 package serverFiles;
 
 import javax.swing.*;
@@ -77,3 +81,5 @@ public class Interface implements Runnable {
         frame.setVisible(true);
     }
 }
+//Createt by Gabriel Ćwiek and Paweł Blak
+//Last update date: 24.05.2020

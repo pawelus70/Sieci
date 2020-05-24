@@ -1,3 +1,7 @@
+//Createt by Gabriel Ćwiek and Paweł Blak
+//Last update date: 24.05.2020
+
+
 package serverFiles;
 
 import java.awt.event.ActionEvent;
@@ -213,3 +217,5 @@ public class Server {
         client.run();
     }
 }
+//Createt by Gabriel Ćwiek and Paweł Blak
+//Last update date: 24.05.2020

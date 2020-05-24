@@ -1,3 +1,6 @@
+//Createt by Gabriel Ćwiek and Paweł Blak
+//Last update date: 24.05.2020
+
 package clientFiles;
 
 import javax.swing.*;
@@ -42,3 +45,5 @@ public class MessageField {
 
     }
 }
+//Createt by Gabriel Ćwiek and Paweł Blak
+//Last update date: 24.05.2020
