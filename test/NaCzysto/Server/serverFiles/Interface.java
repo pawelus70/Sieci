@@ -7,7 +7,7 @@ import java.awt.*;
 public class Interface implements Runnable {
 
     JTextField tf = new JTextField(); // Pole do pisania wiadomości
-    JButton send = new JButton("Wyślij"); //Przycisk
+    JButton sendButton = new JButton("Wyślij"); //Przycisk
     JTextArea wiadomosci = new JTextArea(); //Pole textowe
     JTextArea userss = new JTextArea("Użytkownicy:"); //Pole tekstowe (uzytkownicy)
     JTextArea logii = new JTextArea(); //Pole tekstowe (logi)
@@ -43,7 +43,7 @@ public class Interface implements Runnable {
         // panel.add(Users);
         panel.add(label); //Dodawanie wszystko we flowLayout
         panel.add(tf);
-        panel.add(send);
+        panel.add(sendButton);
 
         // Głowny obszar tekstowy do wiadomości
         JScrollPane Wiadomosci = new JScrollPane(wiadomosci);

@@ -1,4 +1,6 @@
 package serverFiles;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.*;
 import java.time.*;
@@ -93,13 +95,19 @@ public class Server {
         } else if (message.startsWith("003")) {//Wyślij każdemu
             message = message.substring(3);
             for (int i = 0; i < clientHandles.size(); i++) {
-                if (i == index) {
-                    clientHandles.get(i).printMessageWriter.println("You: " + message);
+                if(message.startsWith("Server: ")){
+                    clientHandles.get(i).printMessageWriter.println(message);
                     clientHandles.get(i).printMessageWriter.flush();
-                    continue;
-                };
-                clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name +": " + message);
-                clientHandles.get(i).printMessageWriter.flush();
+                }else {
+                    if (i == index) {
+                        clientHandles.get(i).printMessageWriter.println("You: " + message);
+                        clientHandles.get(i).printMessageWriter.flush();
+                        continue;
+                    }else {
+                        clientHandles.get(i).printMessageWriter.println(clientHandles.get(index).name + ": " + message);
+                        clientHandles.get(i).printMessageWriter.flush();
+                    }
+                }
             }
         }else {
             clientHandles.get(index).printMessageWriter.println("Unrecognizable request");
@@ -111,6 +119,8 @@ public class Server {
     public void run() {
         clientHandles = new ArrayList();   //Lista klientów
         anInterface.run(); //Interfejs
+        anInterface.sendButton.addActionListener(new ServerSendButton());
+        anInterface.tf.addActionListener(new ServerSendButton());
         showConnected();//Użytkownicy
 
         try {
@@ -165,7 +175,18 @@ public class Server {
         timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
         }
 
+        public class ServerSendButton implements ActionListener{
+        String message;
 
+
+            public void actionPerformed(ActionEvent e) {
+                message = "003Server: " + anInterface.tf.getText() + "\n";
+                anInterface.wiadomosci.append(message);
+                requestListener(message, -1);
+                anInterface.tf.setText("");
+
+            }
+        }
 
     public static void main(String[] argv) {//Start serwer
         Server client = new Server();

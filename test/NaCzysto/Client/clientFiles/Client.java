@@ -24,7 +24,7 @@ public class Client {
     ArrayList<ClientList> connectedList = new ArrayList<>();
     ArrayList<MessageField> messageFields = new ArrayList<>();
 
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(4);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
     private final ScheduledExecutorService timedExecutorPool = Executors.newScheduledThreadPool(1);
 
 
@@ -79,6 +79,7 @@ public class Client {
                 whatIsYourName();
                 askForConnected();
                 clientHandle.showStatus();
+                messageFields.get(0).messageField.append("Connected with server\n");
             } catch (Exception e) {
                 //System.out.println("Can't connect with server.");
                 messageFields.get(0).messageField.append("Can't connect with server\n");
@@ -106,8 +107,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
-
 
 
     //TODO: akcje muszą mieć odobny przycisk.
@@ -166,7 +165,7 @@ public class Client {
                     if (message.startsWith("000")) {
                         message = message.substring(3);
                         long time = Long.parseLong(message) / 1000000;
-                        anInterface.messagesField.append("Ping: " + time + " ms\n");
+                        messageFields.get(0).messageField.append("Your ping is: " + time + " ms\n");
                         //System.out.println("Ping: " + time + " ms");
                     } else if (message.startsWith("001")) {
                         connectedList.clear();
@@ -177,8 +176,10 @@ public class Client {
                         showConnected();
                     } else {
                         //System.out.println(message);
-                        anInterface.messagesField.append(message + "\n");
-                        anInterface.messagesField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
+                        messageFields.get(0).messageField.append(message + "\n");
+                        messageFields.get(0).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
+                        messageFields.get(1).messageField.append(message + "\n");
+                        messageFields.get(1).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
                     }
                 }
             } catch (IOException ex) {
@@ -193,12 +194,17 @@ public class Client {
         anInterface.run();
 
 
-
-
         messageFields.add(new MessageField());
         messageFields.get(0).createTab();
-        anInterface.messageTabs.addTab("All",messageFields.get(messageFields.size()-1).messageScroll);
+
+        anInterface.messageTabs.addTab("All",messageFields.get(0).messageScroll);
         anInterface.messageTabs.setBackgroundAt(0,java.awt.Color.decode(anInterface.buttonColor));
+
+        messageFields.add(new MessageField());
+        messageFields.get(1).createTab();
+
+        anInterface.messageTabs.addTab("All Chat",messageFields.get(1).messageScroll);
+        anInterface.messageTabs.setBackgroundAt(1,java.awt.Color.decode(anInterface.buttonColor));
 
         clientHandle.name = anInterface.name = anInterface.inputBox(true);
 
