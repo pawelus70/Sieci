@@ -1,5 +1,5 @@
-//Createt by Gabriel Ćwiek and Paweł Blak
-//Last update date: 24.05.2020
+/*Created by Gabriel Ćwiek and Paweł Blak
+Last update date: 24.05.2020*/
 
 
 package serverFiles;
@@ -81,5 +81,6 @@ public class Interface implements Runnable {
         frame.setVisible(true);
     }
 }
-//Createt by Gabriel Ćwiek and Paweł Blak
-//Last update date: 24.05.2020
+
+/*Created by Gabriel Ćwiek and Paweł Blak
+Last update date: 24.05.2020*/

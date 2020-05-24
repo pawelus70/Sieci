@@ -1,10 +1,8 @@
-//Createt by Gabriel Ćwiek and Paweł Blak
-//Last update date: 24.05.2020
+/*Created by Gabriel Ćwiek and Paweł Blak
+Last update date: 24.05.2020*/
 
 package clientFiles;
 
-
-import javax.swing.event.AncestorListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -12,8 +10,6 @@ import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Properties;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -52,8 +48,6 @@ public class Client {
 
         public void showStatus() {
             anInterface.userStatus.setText("You are connected: " + this.isConnected + "\nShown as: " + this.name + "#" + this.userUniqueId);
-            //System.out.println("To get list of commands type: \"help\"");
-
         }
     }
 
@@ -63,7 +57,7 @@ public class Client {
     public void connectToServer(String ip, int port) {
         if (!clientHandle.isConnected) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -83,7 +77,6 @@ public class Client {
                 clientHandle.showStatus();
                 messageFields.get(0).messageField.append("Connected with server\n");
             } catch (Exception e) {
-                //System.out.println("Can't connect with server.");
                 messageFields.get(0).messageField.append("Can't connect with server\n");
                 clientHandle.socket = null;
                 clientHandle.isConnected = false;
@@ -103,7 +96,6 @@ public class Client {
         clientHandle.printWriter.flush();
 
         try {
-            //clientHandle.name += clientHandle.bufferedReader.readLine();
             clientHandle.userUniqueId = Integer.decode(clientHandle.bufferedReader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,7 +115,6 @@ public class Client {
                         message = message.substring(3);
                         long time = Long.parseLong(message) / 1000000;
                         messageFields.get(0).messageField.append("Your ping is: " + time + " ms\n");
-                        //System.out.println("Ping: " + time + " ms");
                     } else if (message.startsWith("001")) {
                         connectedList.clear();
                         message = message.substring(3);
@@ -146,7 +137,6 @@ public class Client {
                         messageFields.get(2).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
                     }
                     else {
-                        //System.out.println(message);
                         messageFields.get(0).messageField.append(message + "\n");
                         messageFields.get(0).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
                         messageFields.get(1).messageField.append(message + "\n");
@@ -190,7 +180,7 @@ public class Client {
         anInterface.m21.addActionListener(new connectToServer());
         anInterface.m22.addActionListener(new checkConnection());
         anInterface.customSquare.addMouseListener(new changeUserName());
-
+        anInterface.m23.addActionListener(new changeIpPort());
         connectToServer(ip, port);
     }
 
@@ -208,7 +198,11 @@ public class Client {
             }
         }
     }
-
+    public class changeIpPort implements ActionListener{
+        public void actionPerformed(ActionEvent e) {
+            ip = anInterface.changeIpPort(ip);
+        }
+    }
     //msg 001 period 5sec
     public void askForConnected() {
         final Runnable caller = new Runnable() {
@@ -326,5 +320,5 @@ public class Client {
     }
 
 }
-//Createt by Gabriel Ćwiek and Paweł Blak
-//Last update date: 24.05.2020
+/*Created by Gabriel Ćwiek and Paweł Blak
+Last update date: 24.05.2020*/

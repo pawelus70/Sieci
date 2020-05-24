@@ -1,5 +1,5 @@
-//Createt by Gabriel Ćwiek and Paweł Blak
-//Last update date: 24.05.2020
+/*Created by Gabriel Ćwiek and Paweł Blak
+Last update date: 24.05.2020*/
 
 package clientFiles;
 
@@ -19,8 +19,8 @@ public class Interface implements Runnable {
     String name;
     JTextArea users;
     JTextArea userStatus;
-    JMenu m1, m2, m3;
-    JMenuItem m11, m12, m21, m22, m31, m32;
+    JMenu  m2, m3;
+    JMenuItem  m21, m22,m23, m31, m32;
     JScrollPane messageScroll;
     JTabbedPane messageTabs;
 
@@ -183,6 +183,36 @@ public class Interface implements Runnable {
 
     }
 
+    public String changeIpPort(String ip){
+         JPanel pane;
+         JTextField newIp;
+
+        {
+            pane = new JPanel();
+            pane.setLayout(new GridLayout(0, 2, 2, 2));
+
+            newIp = new JTextField(5);
+
+            pane.add(new JLabel("New IP: "));
+            pane.add(newIp);
+
+
+            int option = JOptionPane.showConfirmDialog(frame, pane, "Please fill all the fields", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+            if (option == JOptionPane.YES_OPTION) {
+                Pattern pattern = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$");
+                if(pattern.matcher(newIp.getText()).matches()){
+                    return newIp.getText().trim();
+                }
+                else{
+                    JOptionPane.showMessageDialog(frame,"Wrong IP format","Error",JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+        return ip;
+    };
+
+
     public void run() {
         try {
             //System.out.println("Enter your name: ");
@@ -219,12 +249,14 @@ public class Interface implements Runnable {
 
             m21 = new JMenuItem("Try connect to server");
             m22 = new JMenuItem("Check ping");
+            m23 = new JMenuItem("Change server IP");
             m31 = new JMenuItem("Help");
             m32 = new JMenuItem("Credits");
 
 
             m2.add(m21);
             m2.add(m22);
+            m2.add(m23);
             m3.add(m31);
             m3.add(m32);
 
@@ -298,7 +330,7 @@ public class Interface implements Runnable {
             frame.getContentPane().add(BorderLayout.WEST, userPanel);
             // frame.getContentPane().add(BorderLayout.WEST, users);
 
-            customSquare = new CustomSquare(200, 20, buttonColor, "Change user name", 12, 12, 12, "#000000");
+            customSquare = new CustomSquare(200, 20, buttonColor, "Change user name", 12, 47, 15, "#000000");
 
             userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
             userPanel.add(customSquare);
@@ -368,5 +400,5 @@ public class Interface implements Runnable {
         }
     }
 }
-//Createt by Gabriel Ćwiek and Paweł Blak
-//Last update date: 24.05.2020
+/*Created by Gabriel Ćwiek and Paweł Blak
+Last update date: 24.05.2020*/
