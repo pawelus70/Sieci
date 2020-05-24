@@ -128,7 +128,21 @@ public class Client {
                             connectedList.add(new ClientList(clientHandle.bufferedReader.readLine(), Integer.parseInt(clientHandle.bufferedReader.readLine())));
                         }
                         showConnected();
-                    } else {
+                    } else if(message.startsWith("004")){
+                        message=message.substring(3).trim();
+
+                        messageFields.get(0).messageField.append(message + "\n");
+                        messageFields.get(0).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
+                        messageFields.get(2).messageField.append(message + "\n");
+                        messageFields.get(2).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
+                    }else if(message.startsWith("005")){
+                        message=message.substring(3).trim();
+                        messageFields.get(0).messageField.append(message + "\n");
+                        messageFields.get(0).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
+                        messageFields.get(2).messageField.append(message + "\n");
+                        messageFields.get(2).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
+                    }
+                    else {
                         //System.out.println(message);
                         messageFields.get(0).messageField.append(message + "\n");
                         messageFields.get(0).messageField.setCaretPosition(anInterface.messagesField.getDocument().getLength());
@@ -256,17 +270,18 @@ public class Client {
                     clientHandle.printWriter.println("003" + message);
                     clientHandle.printWriter.flush();
                 }else{
-                    if (!(userIDStart.equals("-1") || userIDStop.equals("-1"))) {
+                    if (!(userIDStart.equals("-1") && userIDStop.equals("-1"))) {
                         Pattern pattern = Pattern.compile("\\d+");
-                        targetID = message.substring(message.indexOf("#") + 1, message.indexOf(":"));
+                        targetID = message.substring(message.indexOf("#") + 1, message.indexOf(":")).trim();
                         if (pattern.matcher(targetID).matches()) {
-                            messageFields.get(0).messageField.append("Whispered to: " + message.trim());
-                            clientHandle.printWriter.println("004" + "@" + message.trim());
+                            messageFields.get(0).messageField.append("Whispered to: " + message.trim()+"\n");
+                            messageFields.get(2).messageField.append("To: " + message.trim()+"\n");
+                            clientHandle.printWriter.println("004" + message.trim());
                         } else {
                             messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
                         }
                         //String message = "003" + anInterface.textField.getText();
-                    } else if (userIDStart.equals("-1") ^ userIDStop.equals("-1")) {
+                    } else  {
                         messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
                     }
                 }
@@ -294,9 +309,10 @@ public class Client {
         for (int i = 0; i < connectedList.size(); i++) {
             //System.out.println(clientList.name + " #" + clientList.index);
             if (connectedList.get(i).name.equals(clientHandle.name)) {
+                if(connectedList.get(i).index==clientHandle.userUniqueId)
                 continue;
             }
-            anInterface.users.append(connectedList.get(i).name + "\n");
+            anInterface.users.append(connectedList.get(i).name +"#"+ connectedList.get(i).index + "\n");
         }
     }
 

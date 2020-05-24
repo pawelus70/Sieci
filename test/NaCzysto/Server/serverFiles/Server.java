@@ -25,7 +25,7 @@ public class Server {
         for (int i = 0; i < clientHandles.size(); i++) { //WYpisz wszystko
             clientHandles.get(index).printMessageWriter.println(clientHandles.get(i).name);
             clientHandles.get(index).printMessageWriter.flush();
-            clientHandles.get(index).printMessageWriter.println(i);
+            clientHandles.get(index).printMessageWriter.println(clientHandles.get(i).userUniqueID);
             clientHandles.get(index).printMessageWriter.flush();
         }
     }
@@ -111,7 +111,25 @@ public class Server {
                 }
             }
         } else if (message.startsWith("004")) {
+            message = message.substring(4);
 
+            String user = message.substring(0,message.indexOf("#")).trim();
+            String userID = message.substring(message.indexOf("#")+1,message.indexOf(":")).trim();
+            int temp= Integer.decode(userID); //zmiana string ID na Int ID
+            boolean gotMatch=false;
+            for(int i=0;i<clientHandles.size();i++){
+                if(user.equals(clientHandles.get(i).name)){
+                    if(temp==clientHandles.get(i).userUniqueID)
+                    gotMatch = true;
+                    clientHandles.get(i).printMessageWriter.println("005From: " +clientHandles.get(index).name+"#"+clientHandles.get(index).userUniqueID+": "+ message.substring(message.indexOf(":")+1).trim());
+                    clientHandles.get(i).printMessageWriter.flush();
+                    break;
+                }
+            }
+            if(!gotMatch){
+                clientHandles.get(index).printMessageWriter.println("004 Cannot find user with such name or index");
+                clientHandles.get(index).printMessageWriter.flush();
+            }
         } else {
             clientHandles.get(index).printMessageWriter.println("Unrecognizable request");
             clientHandles.get(index).printMessageWriter.flush();
@@ -142,7 +160,7 @@ public class Server {
 
                 clientHandles.add(new ClientHandle(clientSocket, usersIndex, userUniqueID)); //Dodaj klienta do bazy
                 threadPool.execute(clientHandles.get(clientHandles.size() - 1)); //Wykonaj wątek klienta
-                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine() + "#" + clientHandles.get(clientHandles.size() - 1).userUniqueID; //pobierz imię klienta
+                clientHandles.get(clientHandles.size() - 1).name = bufferedReader.readLine(); //pobierz imię klienta
 
 
                 usersIndex += 1; //I index
