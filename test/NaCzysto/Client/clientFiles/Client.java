@@ -109,50 +109,6 @@ public class Client {
     }
 
 
-    //TODO: akcje muszą mieć odobny przycisk.
-    //002 - zmiana nazwy użytkownika potrzebuje metody przycisku
-    public class RequestListener implements ActionListener {
-        String message;
-
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            while (clientHandle.isConnected) {
-                message = anInterface.textField.getText();
-                if (!(message.equals(""))) {
-                    if (message.startsWith("002")) {//change name
-                        if (message.length() > 6) {
-                            if (pattern.matcher(message).matches()) {
-                                clientHandle.printWriter.println(message);
-                                clientHandle.printWriter.flush();
-                                clientHandle.name = message.substring(3);
-                            } else {
-                                //System.out.println("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.");
-                                anInterface.messagesField.append("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.\n");
-                                messageFields.get(0).messageField.append("Name can only contain letters [A-Z], numbers [0-9] and its size must be larger than 3 characters.\n");
-                            }
-                        } else {
-                            //System.out.println("Name cant be shorter than 3 signs");
-                            anInterface.messagesField.append("Name cant be shorter than 3 signs\n");
-                        }
-                    } else if (message.equals("003")) {//sendButton to everyone
-
-                    } else if (message.equals("004")) {//whisper
-
-                    } else {
-                        clientHandle.printWriter.println(message);
-                        clientHandle.printWriter.flush();
-                    }
-                }
-                anInterface.textField.setText("");
-                break;
-            }
-            if (!clientHandle.isConnected) {
-                anInterface.messagesField.append("Brak połączenia z serwerem\n");
-                anInterface.textField.setText("");
-            }
-        }
-
-    }
 
     public class WarningReceiver implements Runnable {
         String message;
@@ -282,17 +238,40 @@ public class Client {
         }
     }
 
-    //003 -sendButton to all
+    //003 -sendButton to all + whisper
     public class sendToAll implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            String message = "003" + anInterface.textField.getText();
-            anInterface.textField.setText("");
-            if(!(message.length()<4)) {
-                clientHandle.printWriter.println(message);
-                clientHandle.printWriter.flush();
+            if(clientHandle.isConnected){
+            String message = anInterface.textField.getText();
+            String userIDStart = "" + message.indexOf("#");
+            String userIDStop = "" + message.indexOf(":");
+            String targetID;
+            if (!(userIDStart.equals("-1") || userIDStop.equals("-1"))) {
+                Pattern pattern = Pattern.compile("\\d+");
+                targetID = message.substring(message.indexOf("#")+1, message.indexOf(":"));
+                if(pattern.matcher(targetID).matches()){
+                    messageFields.get(0).messageField.append("Whispered to: " + message.trim());
+                    clientHandle.printWriter.println("004"+"@"+ message.trim());
+                }else{
+                    messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
+                }
+                //String message = "003" + anInterface.textField.getText();
+            } else if (userIDStart.equals("-1") ^ userIDStop.equals("-1")) {
+                messageFields.get(0).messageField.append("Wrong format of message. Try again\n");
+            } else {
+                anInterface.textField.setText("");
+                if (!(message.length() < 4)) {
+                    clientHandle.printWriter.println("003" + message.trim());
+                    clientHandle.printWriter.flush();
+                }
             }
-        }
+        }else{
+                messageFields.get(0).messageField.append("Check your connection with server.\n");
+            }
     }
+    }
+
+
 
     public class connectToServer implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -312,7 +291,7 @@ public class Client {
             if(connectedList.get(i).name.equals(clientHandle.name)) {
                 continue;
             }
-            anInterface.users.append(connectedList.get(i).name + "@" + connectedList.get(i).index + "\n");
+            anInterface.users.append(connectedList.get(i).name  + "\n");
         }
     }
 

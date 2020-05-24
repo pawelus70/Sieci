@@ -200,14 +200,11 @@ public class Interface implements Runnable {
             JMenuBar menuBar = new JMenuBar();
 
 
-            m1 = new JMenu("File"); //Przycisk Plik
+
             m2 = new JMenu("Server");
             m3 = new JMenu("Help"); // Przycisk pomocy
 
-            m1.addSeparator();
-            m1.setPreferredSize(new Dimension(30,30));
-            m1.setBorder(new MatteBorder(0,1,0,1,Color.BLACK));
-            m1.addMouseListener(new mouseListner());
+
 
             m2.addSeparator();
             m2.setPreferredSize(new Dimension(51,30));
@@ -219,19 +216,17 @@ public class Interface implements Runnable {
             m3.setBorder(new MatteBorder(0,1,0,1,Color.BLACK));
             m3.addMouseListener(new mouseListner());
 
-            menuBar.add(m1);
+
             menuBar.add(m2);
             menuBar.add(m3);
 
-            m11 = new JMenuItem("Open"); //Pod opcje w Plik
-            m12 = new JMenuItem("Save as...");
+
             m21 = new JMenuItem("Try connect to server");
             m22 = new JMenuItem("Check ping");
             m31 = new JMenuItem("Help");
             m32 = new JMenuItem("Credits");
 
-            m1.add(m11);
-            m1.add(m12);
+
             m2.add(m21);
             m2.add(m22);
             m3.add(m31);
@@ -283,7 +278,7 @@ public class Interface implements Runnable {
 
             //Użytkownicy
             users = new JTextArea("Users:");
-            users.setMargin(new Insets(2, 2, 5, 5));
+            users.setMargin(new Insets(5, 5, 5, 5));
             //users.setPreferredSize(new Dimension(100,500));
             users.setEditable(false);
             users.setLineWrap(true);
@@ -295,9 +290,9 @@ public class Interface implements Runnable {
 
 
             userStatus = new JTextArea();
-            userStatus.setMinimumSize(new Dimension(200, 195));
-            userStatus.setMaximumSize(new Dimension(200, 195));
-            userStatus.setPreferredSize(new Dimension(200, 195));
+            userStatus.setMinimumSize(new Dimension(200, 50));
+            userStatus.setMaximumSize(new Dimension(200, 50));
+            userStatus.setPreferredSize(new Dimension(200, 50));
             userStatus.setEditable(false);
             userStatus.setMargin(new Insets(5, 5, 5, 5));
             userStatus.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));

@@ -109,7 +109,9 @@ public class Server {
                     }
                 }
             }
-        }else {
+        }else if(message.startsWith("004")){
+
+        } else {
             clientHandles.get(index).printMessageWriter.println("Unrecognizable request");
             clientHandles.get(index).printMessageWriter.flush();
 
