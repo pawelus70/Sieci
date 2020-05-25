@@ -228,6 +228,8 @@ public class Client {
         anInterface.textField.addActionListener(new sendToAll());
         anInterface.m21.addActionListener(new connectToServer());
         anInterface.m22.addActionListener(new checkConnection());
+        anInterface.m31.addActionListener(new helpMe());
+        anInterface.m32.addActionListener(new credits());
         anInterface.customSquare.addMouseListener(new changeUserName());
         anInterface.m23.addActionListener(new changeIpPort());
         connectToServer(ip, port);
@@ -249,6 +251,24 @@ public class Client {
                 anInterface.messagesField.append("Check your connection with server.\n");
                 messageFields.get(0).messageField.append("Check your connection with server.\n");
             }
+        }
+    }
+
+    /**
+     * Wykonawcy
+     */
+    public class credits implements ActionListener{
+        public void actionPerformed(ActionEvent ev){
+            messageFields.get(0).messageField.append("**********Credits**********\nGabriel Cwiek - Biedny Student\nPawel Blak - BiedniejszyStudent\n**********Credits**********\n");
+        }
+    }
+
+    /**
+     * Pomoc
+     */
+    public class helpMe implements ActionListener{
+        public void actionPerformed(ActionEvent ev){
+            messageFields.get(0).messageField.append("*********\nWitaj,\nAby polaczyc sie ponownie z serwerem przejdz do Server>Try connect to server\nAby sprawdzic ping Server>Check ping\nAby wyslac wiadomosc do wszystkich napisz w dolnym okienku i kliknij enter\nAby wyslac wiadomosc prywatna musisz wpisac dane osoby w tym schemacie: @nick#ID: (twoja wiadomosc)\nPo lewej stronie znajduja sie aktualnie polączeni uzytkownicy\nNick mozesz zmienic klikajac w lewym gornym rogu na odpowiadajace okno i wpisujac nowy nick\nZakladki chatu znajduja sie nad oknem z wiadomosciami\n*********\n");
         }
     }
 
