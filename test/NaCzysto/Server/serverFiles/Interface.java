@@ -8,6 +8,22 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+/**
+ * Interface servera
+ * Pole do pisania wiad:
+ * @see #tf
+ * Przycisk wyslij:
+ * @see #sendButton
+ * Pole tekstowe:
+ * @see #wiadomosci
+ * Uzytkownicy:
+ * @see #userss
+ * Logi:
+ * @see #logii
+ *
+ * @author Created by Gabriel Cwiek and Pawel Blak
+ * Last update date: 24.05.2020
+ */
 public class Interface implements Runnable {
 
     JTextField tf = new JTextField(); // Pole do pisania wiadomości
@@ -17,6 +33,10 @@ public class Interface implements Runnable {
     JTextArea logii = new JTextArea(); //Pole tekstowe (logi)
 
 
+    /**
+     * Tworzenie wszytskiego podobnie jak w klient
+     * Tytul,komponenty panel, ramki, uzytkonicy...
+     */
     public void run() {
 
         /////////********************GUI************************////////////////

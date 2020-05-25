@@ -8,6 +8,21 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Pole wiadomosci
+ *
+ * Pole:
+ * @see #messageField
+ * POle scrolowane:
+ * @see #messageScroll
+ * Wyglad:
+ * @see #backgroundColor
+ * @see #fieldBgColor
+ * @see #fontColor
+ *
+ * @author Created by Gabriel Cwiek and Pawel Blak
+ * Last update date: 24.05.2020
+ */
 public class MessageField {
     JTextArea messageField;
     JScrollPane messageScroll;
@@ -19,7 +34,9 @@ public class MessageField {
     String borderColor = "#f9b384";
     String activeTabColor = "#F0F000";
 
-
+    /**
+     * Stworz tab
+     */
     public void createTab() {
         messageField = new JTextArea();
         messageScroll = new JScrollPane(messageField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

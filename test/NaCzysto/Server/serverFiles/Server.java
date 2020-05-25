@@ -12,7 +12,20 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
-
+/**
+ * Plik z głównymi operacjami serveru
+ * Lista uzytkownikow:
+ * @see #clientHandles
+ * Liczba polaczen:
+ * @see #userUniqueID
+ * Index uzytkownikow:
+ * @see #usersIndex
+ * Interface:
+ * @see #anInterface
+ *
+ * @author Created by Gabriel Cwiek and Pawel Blak
+ * Last update date: 24.05.2020
+ */
 public class Server {
     ArrayList<ClientHandle> clientHandles; //Lista użytkowników
     int userUniqueID = 1; //Liczba połączeń
@@ -23,6 +36,10 @@ public class Server {
 
     Interface anInterface = new Interface(); //Interfejs dołącz
 
+    /**
+     * Lista uzytkownikow
+     * @param index - podaj index
+     */
     public void ShareClientList(int index) { //Lista użytkowników
         clientHandles.get(index).printMessageWriter.println("001" + clientHandles.size()); //indexy
         clientHandles.get(index).printMessageWriter.flush(); //przekazanie
@@ -34,6 +51,27 @@ public class Server {
         }
     }
 
+    /**
+     * "Uchwyt" na uzytkownika
+     * Nick:
+     * @see #name
+     * Index:
+     * @see #index
+     * Czas:
+     * @see #time
+     * Socket:
+     * @see #socketMessage
+     * Czytnik:
+     * @see #bufferedMessageReader
+     * Czytacz:
+     * @see #inputMessageStreamReader
+     * Czy polaczony:
+     * @see #isConnected
+     * Pisarz:
+     * @see #printMessageWriter
+     * Unikalne ID:
+     * @see #userUniqueID
+     */
     public class ClientHandle implements Runnable {//Tak zwany uchwyt Użytkownika
         String name;//nick
         int index;//index
@@ -45,7 +83,12 @@ public class Server {
         PrintWriter printMessageWriter;//Pisarz
         int userUniqueID;
 
-
+        /**
+         * Uzytkownik info:
+         * @param clientSocket - Socket
+         * @param index - Index
+         * @param userUniqueID - Unikalne ID
+         */
         public ClientHandle(Socket clientSocket, int index, int userUniqueID) {//Uzytkownik info
             try {
                 socketMessage = clientSocket;
@@ -63,6 +106,11 @@ public class Server {
             }
         }
 
+        /**
+         * Wykonywanie
+         *
+         * Dodawanie wiadomosci i ustawianie karetki
+         */
         public void run() {//wykonywanie
             String message;//wiadomość
             this.index = clientHandles.indexOf(this);//przypisanie indexu
@@ -84,7 +132,17 @@ public class Server {
 
     }
 
-
+    /**
+     * Nasluchiwanie kodu
+     *
+     * 001 - Podaj liste uzytkownikow
+     * 002 - Zmien nick
+     * 003 - Wyslij kazdemu
+     * 004 - wyslij prywatny
+     *
+     * @param message - wiadmosc
+     * @param index - index
+     */
     public void requestListener(String message, int index) {//Nasłuchiwanie i warunki kodów
         if (message.startsWith("000")) { //Echo
 
@@ -141,6 +199,19 @@ public class Server {
         }
     }
 
+    /**
+     * Głowny silnik
+     * Lista klientow:
+     * @see #clientHandles
+     * Interface:
+     * @see #anInterface
+     * Uzytkownicy:
+     * @see #showConnected()
+     *
+     * Tworzenie socketu
+     * Watku
+     * Odbieranie wiad
+     */
     public void run() {
         clientHandles = new ArrayList();   //Lista klientów
         anInterface.run(); //Interfejs
@@ -178,13 +249,19 @@ public class Server {
         }
     }
 
+    /**
+     * Gdy nastapie rozlaczenie
+     * @param index - jaki index
+     */
     public void onDisconnection(int index) {//Gdy rozłączenie
         anInterface.logii.append("User has disconnected, " + LocalDate.now() + ", " + LocalTime.now().withNano(0) + ",  " + clientHandles.get(index).name + "@" + clientHandles.get(index).index + "\n");
 
 
     }
 
-
+    /**
+     * Ilu uzytkownikow
+     */
     public void showConnected() {//Ilu użytkoników
         final Runnable caller = new Runnable() {
             @Override
@@ -199,6 +276,11 @@ public class Server {
         timedExecutorPool.schedule(caller, 0, TimeUnit.SECONDS);
     }
 
+    /**
+     * Wysylanie wiadomosci serwerowej
+     * Wiadomosc:
+     * @see #message
+     */
     public class ServerSendButton implements ActionListener {
         String message;
 
@@ -212,6 +294,9 @@ public class Server {
         }
     }
 
+    /**
+     * Start servera
+     */
     public static void main(String[] argv) {//Start serwer
         Server client = new Server();
         client.run();

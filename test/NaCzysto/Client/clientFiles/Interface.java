@@ -10,6 +10,44 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.regex.Pattern;
 
+/**
+ * Interfejs Klienta
+ * Okno:
+ * @see #frame
+ * Pole do pisania:
+ * @see #textField
+ * Przycisk wyslij:
+ * @see #sendButton
+ * Pole wiadomosci:
+ * @see #messagesField
+ * Wzor:
+ * @see #pattern
+ * Nazwa:
+ * @see #name
+ * Uzytkownicy:
+ * @see #users
+ * Status:
+ * @see #userStatus
+ * Menu dodatkowe, gorne:
+ * @see #m2
+ * @see #m3
+ * @see #m21
+ * @see #m22
+ * @see #m23
+ * @see #m31
+ * @see #m32
+ *
+ * Ustawianie kolorow:
+ * @see #backgroundColor
+ * @see #fieldBgColor
+ * @see #fontColor
+ * @see #buttonColor
+ * @see #borderColor
+ * @see #activeTabColor
+ *
+ * @author Created by Gabriel Cwiek and Pawel Blak
+ * Last update date: 24.05.2020
+ */
 public class Interface implements Runnable {
     JFrame frame;
     JTextField textField = new JTextField(); // Pole do pisania wiadomości
@@ -136,6 +174,11 @@ public class Interface implements Runnable {
 
     CustomSquare customSquare;
 
+    /**
+     * Input box na nazwe uzytkownika, jezeli nie poda wstaw anonymous, lub popraw sie jesli zle
+     * @param firstTime - nick
+     * @return name
+     */
     public String inputBox(boolean firstTime) {
         String name = "";
         if (firstTime) {
@@ -183,6 +226,11 @@ public class Interface implements Runnable {
 
     }
 
+    /**
+     * Do zmiany IP
+     * @param ip - ip
+     * @return ip
+     */
     public String changeIpPort(String ip){
          JPanel pane;
          JTextField newIp;
@@ -212,7 +260,17 @@ public class Interface implements Runnable {
         return ip;
     };
 
-
+    /**
+     * Skladanie wszystkiego w calosc
+     * Tworzenie ramki:
+     * @see #frame
+     * Tworzenie menu i komponentow:
+     * @see #m2
+     * Tworzenie Panelu
+     * Glowny obszar tekstowy:
+     * @see #messageTabs
+     * A takze rozne ustawienia rozmiarow i kolorow
+     */
     public void run() {
         try {
             //System.out.println("Enter your name: ");

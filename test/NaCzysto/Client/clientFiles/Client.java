@@ -13,6 +13,15 @@ import java.util.ArrayList;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
+/**
+ * Plik z glownymi operacjami u klienta.
+ * Glowne konfiguracje jak ip, port, a takze listy
+ * @see #ip
+ * @see #port
+ *
+ * @author Created by Gabriel Cwiek and Pawel Blak
+ * Last update date: 24.05.2020
+ */
 public class Client {
     String ip = "127.0.0.1";
     int port = 49152;
@@ -26,7 +35,11 @@ public class Client {
     private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
     private final ScheduledExecutorService timedExecutorPool = Executors.newScheduledThreadPool(1);
 
-
+    /**
+     * Lista klientow - nick i indeks
+     * @see #name
+     * @see #index
+     */
     public class ClientList {
         String name;
         int index;
@@ -37,6 +50,23 @@ public class Client {
         }
     }
 
+    /**
+     * Uchwyt na klienta
+     * Nick:
+     * @see #name
+     * Socket:
+     * @see #socket
+     * Bufor:
+     * @see #bufferedReader
+     * "Pisarz":
+     * @see #printWriter
+     * Polaczenie:
+     * @see #isConnected
+     * "Czytacz";
+     * @see #inputStreamReader
+     * Unikalne ID:
+     * @see #userUniqueId
+     */
     public class ClientHandle {
         String name;
         Socket socket;
@@ -46,6 +76,9 @@ public class Client {
         InputStreamReader inputStreamReader;
         int userUniqueId;
 
+        /**
+         * Pokazanie statusu
+         */
         public void showStatus() {
             anInterface.userStatus.setText("You are connected: " + this.isConnected + "\nShown as: " + this.name + "#" + this.userUniqueId);
         }
@@ -53,7 +86,13 @@ public class Client {
 
     ClientHandle clientHandle = new ClientHandle();
 
-
+    /**
+     *Polaczenie z serwerem
+     * IP:
+     * @param ip - ip
+     * PORT:
+     * @param port - port
+     */
     public void connectToServer(String ip, int port) {
         if (!clientHandle.isConnected) {
             try {
@@ -90,7 +129,9 @@ public class Client {
         }
     }
 
-
+    /**
+     * Nazwa uzytkownika
+     */
     public void whatIsYourName() {
         clientHandle.printWriter.println(clientHandle.name);
         clientHandle.printWriter.flush();
@@ -102,7 +143,12 @@ public class Client {
         }
     }
 
-
+    /**
+     * Odczytywanie wiadomosci
+     * Czytanie po otrzymanej wartosci kodu
+     * Wiadmosc:
+     * @see #message
+     */
     public class WarningReceiver implements Runnable {
         String message;
 
@@ -151,6 +197,9 @@ public class Client {
         }
     }
 
+    /**
+     * Wykonywanie
+     */
     public void run() {
         anInterface.run();
 
@@ -185,6 +234,10 @@ public class Client {
     }
 
     //echo 000
+
+    /**
+     * Sprawdzanie polaczenia czyt. ping
+     */
     public class checkConnection implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (clientHandle.isConnected) {
@@ -198,12 +251,20 @@ public class Client {
             }
         }
     }
+
+    /**
+     * Zmiana IpPort
+     */
     public class changeIpPort implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             ip = anInterface.changeIpPort(ip);
         }
     }
     //msg 001 period 5sec
+
+    /**
+     * Prosba o polaczenie
+     */
     public void askForConnected() {
         final Runnable caller = new Runnable() {
             public void run() {
@@ -217,6 +278,10 @@ public class Client {
     }
 
     //msg 002 - change user name
+
+    /**
+     * Zmien nazwe uzytkownika
+     */
     public class changeUserName implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -254,7 +319,15 @@ public class Client {
     }
 
     //003 -sendButton to all + whisper
+
+    /**
+     * Wyslij wiadomosc do kazdej osoby
+     */
     public class sendToAll implements ActionListener {
+        /**
+         * Sprawdzanie wiadomosci itd.
+         * @param e - active
+         */
         public void actionPerformed(ActionEvent e) {
             if (clientHandle.isConnected) {
                 String message = anInterface.textField.getText();
@@ -289,7 +362,9 @@ public class Client {
         }
     }
 
-
+    /**
+     * Polaczenie z serwerem reczne
+     */
     public class connectToServer implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (!clientHandle.isConnected) {
@@ -301,6 +376,9 @@ public class Client {
         }
     }
 
+    /**
+     * Pokaz polaczonych uzytkownikow
+     */
     public void showConnected() {
         anInterface.users.setText("Users:\n");
         for (int i = 0; i < connectedList.size(); i++) {
@@ -313,7 +391,9 @@ public class Client {
         }
     }
 
-
+    /**
+     * Rozpocznij program
+     */
     public static void main(String[] argv) {
         Client client = new Client();
         client.run();
